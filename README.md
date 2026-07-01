@@ -1,102 +1,150 @@
 # SimpleScript
 
-> A general-purpose programming language that reads like plain English, with the
-> least punctuation that still keeps it clear — and compiles to a real program.
+**A programming language that reads like plain English — and compiles to a real, fast program.**
 
-**Status: v0.1 — early alpha.** The language works end to end and is well tested,
-but it is young: the standard library is tiny, error messages are still growing,
-and some constructs (interactive `ask`, remote libraries) are not built yet.
-Expect rough edges, and please file issues. SimpleScript needs **Go 1.22+**
-installed (from [go.dev/dl](https://go.dev/dl/)); it uses the Go toolchain to
-compile and run programs.
+[![build](https://github.com/Hotgrin/simplescript/actions/workflows/test.yml/badge.svg)](https://github.com/Hotgrin/simplescript/actions/workflows/test.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Go 1.22+](https://img.shields.io/badge/Go-1.22%2B-00ADD8.svg)](https://go.dev/dl/)
+![status: alpha](https://img.shields.io/badge/status-v0.1%20alpha-orange.svg)
 
-This is the **clean rebuild**, started from a fully-designed specification. The
-**core pipeline now works end to end** — near-English goes in, a real program
-comes out:
+> SimpleScript is for people who want to *make* something without first learning
+> punctuation-heavy syntax. You write near-English; it transpiles to **Go** and
+> builds a real native executable (or a Windows `.exe`). Small language, real
+> performance, and a checker that explains mistakes kindly — in English **or**
+> Afrikaans.
 
-- the **lexer** — reads source text and breaks it into *tokens*;
-- the **parser** — turns those tokens into the *tree* (AST) of the program;
-- the **transpiler** — walks the tree and writes the equivalent **Go**, which the
-  Go toolchain compiles into a real native executable (including a Windows `.exe`);
-- the **watcher** — the always-on checker that reports *provable* problems in plain
-  English (or Afrikaans), with the iron rule: if it flags something, it is real.
+---
 
-## Where things are
+## See it
 
 ```
-simplescript/
-├── go.mod
-├── internal/
-│   ├── lexer/         # source text -> tokens
-│   ├── ast/           # the tree node types
-│   ├── parser/        # tokens -> tree
-│   ├── transpiler/    # tree -> Go source
-│   ├── loader/        # resolves "use" libraries into one program
-│   └── watcher/       # tree -> findings (the checker)
-└── cmd/
-    ├── simplescript/  # the friendly command (run / test / build / check / reveal)
-    ├── sslex/         # prints the tokens for a program
-    ├── ssparse/       # prints the tree (AST) for a program
-    ├── ssrun/         # transpiles + runs a program (use -go to reveal the Go)
-    └── sscheck/       # runs the Watcher (use -af for Afrikaans messages)
-```
-
-Example programs live in `examples/`.
-
-Example programs live in `examples/`.
-
-## Try it (the friendly way)
-
-Build the one command, then use it — no need to know Go is underneath:
-
-```bash
-go build -o simplescript ./cmd/simplescript
-
-./simplescript run     examples/hello.ss     # run a program
-./simplescript run     examples/greet.ss --name AJ   # pass inputs to it
-./simplescript test    examples/calc.ss      # run a program's tests
-./simplescript check   examples/hello.ss     # check it for problems
-./simplescript check --af examples/hello.ss  # ...in Afrikaans
-./simplescript build   examples/hello.ss     # make a standalone program
-./simplescript build --windows examples/hello.ss   # make a Windows .exe
-./simplescript reveal  examples/hello.ss     # show the Go it becomes
-./simplescript help
-```
-
-`run` and `build` quietly run the Watcher first, so you get friendly SimpleScript
-messages instead of raw Go errors.
-
-## Under the hood (developer tools)
-
-```bash
-go run ./cmd/sslex     <file.ss>   # show the tokens
-go run ./cmd/ssparse   <file.ss>   # show the tree (AST)
-go run ./cmd/ssrun -go <file.ss>   # show the generated Go
-go test ./...                      # run all tests (61 and counting)
-```
-
-## Tests, written in English
-
-SimpleScript treats testing as part of the language, not an add-on:
-
-```
-action add with a, b
-    give back a plus b
+action discount with price, percent
+    give back price minus (price times percent divided by 100)
 end action
 
-test "addition works"
-    expect add with 2, 3 to be 5
-end test
+set total to 897
+say "Total: R" plus total
+say "After 10% off: R" plus discount with total, 10
 ```
 
-`simplescript test` compiles and runs these for you. Assertions include
-`to be`, `to be at least`, `to be at most`, `to be less than`,
-`to be greater than`, and `contains`.
+```
+Total: R897
+After 10% off: R807.3
+```
 
-## Handling things that can fail
+No semicolons, no curly braces, no `public static void`. Names can have spaces
+(`cart total` is one name), and `divided by` always gives you a decimal — because
+that is what a beginner expects.
 
-An action signals failure with `give back problem`, and callers handle it with
-`try` / `if it fails`:
+**Curious what it becomes?** `simplescript reveal hello.ss` shows you the Go:
+
+```
+say "Hello, world"
+```
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Hello, world")
+}
+```
+
+Nothing is hidden. The whole pipeline is: your words → tokens → a tree → Go → a
+real program.
+
+---
+
+## The Watcher — mistakes explained kindly
+
+SimpleScript ships with an always-on checker called the **Watcher**. Its iron
+rule: *if it flags something, it is genuinely wrong* — it never raises a false
+alarm. And it speaks your language:
+
+```
+say discountt        # a typo
+set x to 10 divided by 0
+```
+
+```
+error  line 1: there is no value called 'discountt' here — is it a typo, or did you forget to set it?
+error  line 2: this divides by zero, which a computer cannot do
+```
+
+Prefer Afrikaans? Add `--af`:
+
+```
+fout   reël 1: daar is geen waarde genaamd 'discountt' hier nie — is dit 'n tikfout, of het jy vergeet om dit te stel?
+fout   reël 2: hierdie deel deur nul, wat 'n rekenaar nie kan doen nie
+```
+
+`run` and `build` run the Watcher first, so a beginner sees friendly SimpleScript
+messages — **never a raw Go error**.
+
+---
+
+## Quick start
+
+You need **[Go 1.22+](https://go.dev/dl/)** (SimpleScript uses the Go toolchain
+under the hood).
+
+```bash
+git clone https://github.com/Hotgrin/simplescript
+cd simplescript
+go build -o simplescript ./cmd/simplescript
+
+./simplescript run    examples/hello.ss          # run it
+./simplescript test   examples/calc.ss           # run its tests
+./simplescript check  examples/hello.ss          # check for problems (--af for Afrikaans)
+./simplescript build  --windows examples/shop.ss # make a Windows .exe
+./simplescript reveal examples/hello.ss          # show the Go it becomes
+```
+
+Prefer Docker? `docker build -t simplescript .` then
+`docker run --rm -v "$PWD":/work simplescript run hello.ss`.
+
+---
+
+## A quick tour
+
+**Variables, math, and text.** `plus` joins text or adds numbers; it converts for
+you.
+
+```
+set learner to "Adriaan"
+set score to 82
+say learner plus " scored " plus score
+```
+
+**Decisions and loops** read the way you would say them.
+
+```
+if score is at least 50
+    say "passed"
+else
+    say "try again"
+end if
+
+repeat 3 times
+    say "hi"
+end repeat
+```
+
+**Records** describe a thing; read fields with `of`.
+
+```
+describe order
+    item is "Wireless mouse"
+    price is 299
+end describe
+
+say item of order
+```
+
+**Handle things that can fail** with `try` / `if it fails`. The Watcher makes sure
+a call that can fail is always handled.
 
 ```
 action safe divide with a, b
@@ -110,71 +158,58 @@ try
     set answer to safe divide with 10, 0
     say answer
 if it fails
-    say "Could not do that: " plus the problem
+    say "Could not: " plus the problem
 end try
 ```
 
-Inside `if it fails`, `the problem` holds the message. The Watcher makes sure a
-call that can fail is always wrapped in a `try`, so failures are never silently
-dropped.
+**Tests are part of the language.** `simplescript test` runs them.
 
-## Inputs and libraries
+```
+test "ten percent off 100 is 90"
+    expect discount with 100, 10 to be 90
+end test
+```
 
-A program can take command-line inputs, which also gives it a `--help`:
+**Do things at the same time**, safely (SimpleScript guards the shared list for
+you):
+
+```
+at the same time
+    do download report
+    do download invoices
+end at the same time
+```
+
+**Take command-line inputs** (you get a `--help` for free), and **reuse code**
+from other files:
 
 ```
 input name as text default "world"
-say "Hello, " plus name
+use "lib/textutils"
+say greet with name
 ```
 
 ```bash
 simplescript run greet.ss --name AJ
 ```
 
-And it can reuse code from other SimpleScript files:
+---
 
-```
-use "lib/textutils"
-say greet with "AJ"
-```
+## Status
 
-The library's actions are compiled together with your program, and the Watcher
-checks the imported code too. Library paths are local for now (remote/GitHub
-fetching is on the roadmap).
+**v0.1 — early alpha.** The language works end to end and is well tested (70+
+tests across six packages), but it is young: the standard library is tiny, and
+some things are not built yet. Expect rough edges — and please
+[open an issue](https://github.com/Hotgrin/simplescript/issues) when you find one.
 
-## What's next
+**On the roadmap:** a browser playground (try it with nothing installed), remote
+libraries (`use ... from "github.com/..."`), interactive `ask` prompts, a richer
+standard library, and the optional Assessor / AI-mentor checking layers.
 
-The core spine, concurrency, the Watcher, first-class testing, error handling,
-command-line inputs, local libraries, and the friendly `simplescript` command
-all work. On the roadmap: remote libraries, interactive `ask` prompts, and the
-optional Assessor and AI Mentor layers.
+## Contributing
 
-### Make a real executable
-
-```bash
-go run ./cmd/ssrun -go myapp.ss > main.go
-printf 'module myapp\n\ngo 1.22\n' > go.mod
-go build -o myapp                       # native executable
-GOOS=windows GOARCH=amd64 go build -o myapp.exe   # a Windows .exe
-```
-
-## How the lexer works (the one clever idea)
-
-SimpleScript lets a **name contain spaces** — `cart total` is one name, not two.
-That only works because a small, fixed set of **connector words** act as rails:
-`to`, `of`, `with`, `is`, `and`, and friends. A name is simply every word *up to
-the next rail*.
-
-So `set cart total to 0` reads as:
-
-```
-SET · IDENT("cart total") · TO · NUMBER("0")
-```
-
-The lexer always prefers the **longest** reserved phrase, so `is greater than`
-beats `is`, and `give back` is a single keyword. Names keep their original casing
-and may use letters from **any language** (`prénom`, `имя`, `名前`) — SimpleScript
-is international from the very first stage.
+Contributions are very welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Two house
+rules: every change ships with a test, and the Watcher never raises a false alarm.
 
 ## Licence
 
