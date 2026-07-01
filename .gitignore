@@ -1,0 +1,27 @@
+# Build output
+/simplescript
+/simplescript.exe
+/sslex
+/ssparse
+/ssrun
+/sscheck
+
+# Programs built from examples (simplescript build)
+/hello
+/shop
+/greet
+/calc
+/safe
+/useapp
+*.exe
+
+# Go
+*.test
+*.out
+/vendor/
+
+# Editor / OS
+.DS_Store
+*.swp
+.idea/
+.vscode/

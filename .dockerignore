@@ -1,0 +1,9 @@
+.git
+.github
+*.exe
+/simplescript
+/sslex
+/ssparse
+/ssrun
+/sscheck
+.DS_Store
