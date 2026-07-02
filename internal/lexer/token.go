@@ -1,4 +1,4 @@
-// Package lexer turns SimpleScript source text into a stream of tokens.
+// Package lexer turns hotgrin source text into a stream of tokens.
 //
 // This file defines the tokens themselves: the small, fixed vocabulary of
 // "connector words" that act as the grammar's rails, plus the literal and
@@ -14,7 +14,7 @@ const (
 	// Structural / literal tokens
 	ILLEGAL TokenType = iota // something the lexer did not understand
 	EOF                      // end of the source
-	NEWLINE                  // end of a line (SimpleScript is line-oriented)
+	NEWLINE                  // end of a line (hotgrin is line-oriented)
 	IDENT                    // a name, which may contain spaces (e.g. "cart total")
 	NUMBER                   // 42, 3.14, -7
 	STRING                   // "in quotes" or 'in quotes'
@@ -92,7 +92,7 @@ const (
 )
 
 // Token is a single lexical unit, with the line it came from so that every
-// later stage can point error messages back at the user's SimpleScript line.
+// later stage can point error messages back at the user's hotgrin line.
 type Token struct {
 	Type    TokenType
 	Literal string // the original text (names keep their casing and script)

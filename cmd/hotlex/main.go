@@ -1,19 +1,19 @@
-// Command sslex is a tiny tool that shows the lexer at work: give it a
-// SimpleScript file and it prints the token stream. With no file, it lexes a
+// Command hotlex is a tiny tool that shows the lexer at work: give it a
+// hotgrin file and it prints the token stream. With no file, it lexes a
 // built-in demo that touches many language features at once.
 //
-//	go run ./cmd/sslex            # lex the built-in demo
-//	go run ./cmd/sslex myapp.ss   # lex your own file
+//	go run ./cmd/hotlex            # lex the built-in demo
+//	go run ./cmd/hotlex myapp.hot   # lex your own file
 package main
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/hotgrin/simplescript/internal/lexer"
+	"github.com/hotgrin/hotgrin/internal/lexer"
 )
 
-const demo = `# A small taste of SimpleScript
+const demo = `# A small taste of hotgrin
 say "Hello, world"
 
 set cart total to 0

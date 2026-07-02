@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hotgrin/simplescript/internal/ast"
+	"github.com/hotgrin/hotgrin/internal/ast"
 )
 
 func write(t *testing.T, dir, name, content string) {
@@ -28,10 +28,10 @@ func actionNames(p *ast.Program) []string {
 
 func TestLoadMergesLibraryActions(t *testing.T) {
 	dir := t.TempDir()
-	write(t, dir, "lib.ss", "action greet with who\ngive back who\nend action")
-	write(t, dir, "app.ss", "use \"lib\"\nsay greet with \"AJ\"")
+	write(t, dir, "lib.hot", "action greet with who\ngive back who\nend action")
+	write(t, dir, "app.hot", "use \"lib\"\nsay greet with \"AJ\"")
 
-	prog, errs := LoadFile(filepath.Join(dir, "app.ss"))
+	prog, errs := LoadFile(filepath.Join(dir, "app.hot"))
 	if len(errs) > 0 {
 		t.Fatalf("unexpected errors: %v", errs)
 	}
@@ -47,11 +47,11 @@ func TestLoadMergesLibraryActions(t *testing.T) {
 
 func TestTransitiveAndLoadOnce(t *testing.T) {
 	dir := t.TempDir()
-	write(t, dir, "base.ss", "action a\ngive back 1\nend action")
-	write(t, dir, "mid.ss", "use \"base\"\naction b\ngive back a\nend action")
-	write(t, dir, "app.ss", "use \"mid\"\nuse \"base\"\nsay b")
+	write(t, dir, "base.hot", "action a\ngive back 1\nend action")
+	write(t, dir, "mid.hot", "use \"base\"\naction b\ngive back a\nend action")
+	write(t, dir, "app.hot", "use \"mid\"\nuse \"base\"\nsay b")
 
-	prog, errs := LoadFile(filepath.Join(dir, "app.ss"))
+	prog, errs := LoadFile(filepath.Join(dir, "app.hot"))
 	if len(errs) > 0 {
 		t.Fatalf("unexpected errors: %v", errs)
 	}
@@ -66,8 +66,8 @@ func TestTransitiveAndLoadOnce(t *testing.T) {
 
 func TestRemoteLibraryRejected(t *testing.T) {
 	dir := t.TempDir()
-	write(t, dir, "app.ss", "use math from \"github.com/x/y\"\nsay 1")
-	_, errs := LoadFile(filepath.Join(dir, "app.ss"))
+	write(t, dir, "app.hot", "use math from \"github.com/x/y\"\nsay 1")
+	_, errs := LoadFile(filepath.Join(dir, "app.hot"))
 	if len(errs) == 0 || !strings.Contains(strings.Join(errs, " "), "remote libraries") {
 		t.Errorf("expected a remote-library error, got %v", errs)
 	}
@@ -75,8 +75,8 @@ func TestRemoteLibraryRejected(t *testing.T) {
 
 func TestMissingLibraryReported(t *testing.T) {
 	dir := t.TempDir()
-	write(t, dir, "app.ss", "use \"nope\"\nsay 1")
-	_, errs := LoadFile(filepath.Join(dir, "app.ss"))
+	write(t, dir, "app.hot", "use \"nope\"\nsay 1")
+	_, errs := LoadFile(filepath.Join(dir, "app.hot"))
 	if len(errs) == 0 {
 		t.Error("expected an error for a missing library")
 	}

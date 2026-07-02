@@ -1,4 +1,4 @@
-# SimpleScript needs the Go toolchain at RUNTIME, not just at build time: the
+# hotgrin needs the Go toolchain at RUNTIME, not just at build time: the
 # `run`, `build`, and `test` commands shell out to `go` to compile your program.
 # So this image keeps Go in the final layer on purpose — a slim "scratch" image
 # without Go could only do `check` and `reveal`. This is the honest trade-off
@@ -10,15 +10,15 @@ WORKDIR /src
 COPY . .
 
 # Install the friendly command onto PATH.
-RUN go build -o /usr/local/bin/simplescript ./cmd/simplescript
+RUN go build -o /usr/local/bin/hotgrin ./cmd/hotgrin
 
-# A scratch workspace for your .ss files; mount your own with -v.
+# A scratch workspace for your .hot files; mount your own with -v.
 WORKDIR /work
 
-ENTRYPOINT ["simplescript"]
+ENTRYPOINT ["hotgrin"]
 CMD ["help"]
 
 # Usage:
-#   docker build -t simplescript .
-#   docker run --rm -v "$PWD":/work simplescript run hello.ss
-#   docker run --rm -v "$PWD":/work simplescript check --af hello.ss
+#   docker build -t hotgrin .
+#   docker run --rm -v "$PWD":/work hotgrin run hello.hot
+#   docker run --rm -v "$PWD":/work hotgrin check --af hello.hot

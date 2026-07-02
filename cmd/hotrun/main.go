@@ -1,10 +1,10 @@
-// Command ssrun is the whole pipeline in one tool: it reads a SimpleScript
+// Command hotrun is the whole pipeline in one tool: it reads a hotgrin
 // program, transpiles it to Go, and then runs it. With -go it prints the
 // generated Go instead ("reveal the Go").
 //
-//	go run ./cmd/ssrun            # run the built-in demo
-//	go run ./cmd/ssrun app.ss     # run your program
-//	go run ./cmd/ssrun -go app.ss # show the Go it generates
+//	go run ./cmd/hotrun            # run the built-in demo
+//	go run ./cmd/hotrun app.hot     # run your program
+//	go run ./cmd/hotrun -go app.hot # show the Go it generates
 package main
 
 import (
@@ -13,12 +13,12 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/hotgrin/simplescript/internal/lexer"
-	"github.com/hotgrin/simplescript/internal/parser"
-	"github.com/hotgrin/simplescript/internal/transpiler"
+	"github.com/hotgrin/hotgrin/internal/lexer"
+	"github.com/hotgrin/hotgrin/internal/parser"
+	"github.com/hotgrin/hotgrin/internal/transpiler"
 )
 
-const demo = `say "Hello from SimpleScript"
+const demo = `say "Hello from hotgrin"
 
 set price to 199
 set quantity to 3
@@ -48,7 +48,7 @@ put 75 into scores
 say count of scores
 
 repeat 3 times
-    say "SimpleScript works"
+    say "hotgrin works"
 end repeat
 
 repeat for each s in scores
@@ -98,7 +98,7 @@ func main() {
 	}
 
 	// Write the Go to a temp module and run it.
-	dir, err := os.MkdirTemp("", "ssrun")
+	dir, err := os.MkdirTemp("", "hotrun")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -109,7 +109,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module ssrun\n\ngo 1.22\n"), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module hotrun\n\ngo 1.22\n"), 0o644); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}

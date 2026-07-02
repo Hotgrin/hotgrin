@@ -1,9 +1,9 @@
 //go:build js && wasm
 
-// Command ssplayground compiles the SimpleScript pipeline to WebAssembly for
+// Command hotplayground compiles the hotgrin pipeline to WebAssembly for
 // the browser playground. It exposes one JavaScript function:
 //
-//	transpileSS(source) -> {
+//	transpileHot(source) -> {
 //	    goCode:      string,          // generated main.go ("" on parse errors)
 //	    testCode:    string,          // generated main_test.go, if any tests
 //	    parseErrors: [{line, message}],
@@ -16,15 +16,15 @@ package main
 import (
 	"syscall/js"
 
-	"github.com/hotgrin/simplescript/internal/lexer"
-	"github.com/hotgrin/simplescript/internal/parser"
-	"github.com/hotgrin/simplescript/internal/transpiler"
-	"github.com/hotgrin/simplescript/internal/watcher"
+	"github.com/hotgrin/hotgrin/internal/lexer"
+	"github.com/hotgrin/hotgrin/internal/parser"
+	"github.com/hotgrin/hotgrin/internal/transpiler"
+	"github.com/hotgrin/hotgrin/internal/watcher"
 )
 
-func transpileSS(this js.Value, args []js.Value) any {
+func transpileHot(this js.Value, args []js.Value) any {
 	if len(args) < 1 {
-		return js.ValueOf(map[string]any{"error": "transpileSS needs one argument"})
+		return js.ValueOf(map[string]any{"error": "transpileHot needs one argument"})
 	}
 	source := args[0].String()
 
@@ -66,7 +66,7 @@ func transpileSS(this js.Value, args []js.Value) any {
 }
 
 func main() {
-	js.Global().Set("transpileSS", js.FuncOf(transpileSS))
-	js.Global().Set("simplescriptReady", js.ValueOf(true))
+	js.Global().Set("transpileHot", js.FuncOf(transpileHot))
+	js.Global().Set("hotgrinReady", js.ValueOf(true))
 	select {} // keep the Go runtime alive for future calls
 }

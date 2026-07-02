@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hotgrin/simplescript/internal/lexer"
+	"github.com/hotgrin/hotgrin/internal/lexer"
 )
 
 // parse lexes and parses src, failing the test on any parse error.

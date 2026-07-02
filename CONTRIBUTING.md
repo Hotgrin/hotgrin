@@ -1,6 +1,6 @@
-# Contributing to SimpleScript
+# Contributing to hotgrin
 
-Thanks for your interest — SimpleScript is young and friendly contributions are
+Thanks for your interest — hotgrin is young and friendly contributions are
 very welcome.
 
 ## Getting set up
@@ -8,15 +8,15 @@ very welcome.
 You need **Go 1.22+** ([go.dev/dl](https://go.dev/dl/)). Then:
 
 ```bash
-git clone https://github.com/hotgrin/simplescript
-cd simplescript
+git clone https://github.com/hotgrin/hotgrin
+cd hotgrin
 go build ./...
 go test ./...
 ```
 
 ## The shape of the project
 
-SimpleScript is a transpiler: SimpleScript source → tokens → tree → Go → a real
+hotgrin is a transpiler: hotgrin source → tokens → tree → Go → a real
 program. Each stage is its own package under `internal/`:
 
 - `lexer` — text to tokens
@@ -43,4 +43,4 @@ go test ./...
 ```
 
 Keep code clear and beginner-readable over clever — that is the whole point of
-SimpleScript. Dankie!
+hotgrin. Dankie!

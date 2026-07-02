@@ -1,10 +1,10 @@
-// Package transpiler walks a SimpleScript AST and writes the equivalent Go
+// Package transpiler walks a hotgrin AST and writes the equivalent Go
 // source. The Go is then compiled with the normal Go toolchain into a real
-// executable — which is how SimpleScript turns plain English into a program.
+// executable — which is how hotgrin turns plain English into a program.
 //
 // It carries a small, best-effort type inferer so the generated Go is honest
 // and clean: numbers stay int/float64, text stays string, records become
-// structs, and SimpleScript's own rules (e.g. "plus" joins text, "divided by"
+// structs, and hotgrin's own rules (e.g. "plus" joins text, "divided by"
 // always gives a decimal) are respected.
 package transpiler
 
@@ -15,7 +15,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/hotgrin/simplescript/internal/ast"
+	"github.com/hotgrin/hotgrin/internal/ast"
 )
 
 // --- types --------------------------------------------------------------
@@ -1258,7 +1258,7 @@ var goKeywords = map[string]bool{
 	"select": true, "struct": true, "switch": true, "type": true, "var": true,
 }
 
-// sanitize turns a SimpleScript name (which may contain spaces) into a valid Go
+// sanitize turns a hotgrin name (which may contain spaces) into a valid Go
 // identifier in camelCase: "cart total" -> "cartTotal".
 func sanitize(name string) string {
 	parts := strings.Fields(name)

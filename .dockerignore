@@ -1,9 +1,9 @@
 .git
 .github
 *.exe
-/simplescript
-/sslex
-/ssparse
-/ssrun
-/sscheck
+/hotgrin
+/hotlex
+/hotparse
+/hotrun
+/hotcheck
 .DS_Store

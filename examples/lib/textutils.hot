@@ -1,4 +1,4 @@
-# A small reusable SimpleScript library.
+# A small reusable hotgrin library.
 action greet with who
     give back "Hello, " plus who
 end action

@@ -1,4 +1,4 @@
-# Your first SimpleScript program.
+# Your first hotgrin program.
 say "Hello, world"
 
 set name to "AJ"

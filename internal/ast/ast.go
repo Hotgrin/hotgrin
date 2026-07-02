@@ -1,9 +1,9 @@
-// Package ast defines the tree shapes that a SimpleScript program parses into.
+// Package ast defines the tree shapes that a hotgrin program parses into.
 //
 // Every node can print itself as a small S-expression, which makes the tree
 // easy to read in the demo tool and easy to assert on in tests. Statements and
 // the key expressions also carry the source Line they came from, so the checker
-// and later stages can point messages back at the user's SimpleScript line.
+// and later stages can point messages back at the user's hotgrin line.
 package ast
 
 import (
@@ -214,7 +214,7 @@ func (s *GiveBackStmt) String() string {
 	return "(give-back " + s.Value.String() + ")"
 }
 
-// UseStmt imports a SimpleScript library file. Name is an optional label.
+// UseStmt imports a hotgrin library file. Name is an optional label.
 type UseStmt struct {
 	stmtBase
 	Name string

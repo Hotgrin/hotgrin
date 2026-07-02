@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hotgrin/simplescript/internal/lexer"
-	"github.com/hotgrin/simplescript/internal/parser"
+	"github.com/hotgrin/hotgrin/internal/lexer"
+	"github.com/hotgrin/hotgrin/internal/parser"
 )
 
 func check(t *testing.T, src string) []Finding {

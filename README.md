@@ -1,19 +1,20 @@
-# SimpleScript
+# hotgrin
 
-**A programming language that reads like plain English — and compiles to a real, fast program.**
+**The language that makes you grin.** A programming language that reads like plain
+English — and compiles to a real, fast program.
 
-[![build](https://github.com/Hotgrin/simplescript/actions/workflows/test.yml/badge.svg)](https://github.com/Hotgrin/simplescript/actions/workflows/test.yml)
+[![build](https://github.com/Hotgrin/hotgrin/actions/workflows/test.yml/badge.svg)](https://github.com/Hotgrin/hotgrin/actions/workflows/test.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Go 1.22+](https://img.shields.io/badge/Go-1.22%2B-00ADD8.svg)](https://go.dev/dl/)
-![status: alpha](https://img.shields.io/badge/status-v0.1%20alpha-orange.svg)
+![status: alpha](https://img.shields.io/badge/status-v0.2%20alpha-orange.svg)
 
-> SimpleScript is for people who want to *make* something without first learning
+> hotgrin is for people who want to *make* something without first learning
 > punctuation-heavy syntax. You write near-English; it transpiles to **Go** and
 > builds a real native executable (or a Windows `.exe`). Small language, real
 > performance, and a checker that explains mistakes kindly — in English **or**
 > Afrikaans.
 
-**[▶ Try it in your browser — nothing to install](https://hotgrin.github.io/simplescript/playground/)**
+**[▶ Try it in your browser — nothing to install](https://hotgrin.github.io/hotgrin/playground/)**
 
 ---
 
@@ -38,7 +39,7 @@ No semicolons, no curly braces, no `public static void`. Names can have spaces
 (`cart total` is one name), and `divided by` always gives you a decimal — because
 that is what a beginner expects.
 
-**Curious what it becomes?** `simplescript reveal hello.ss` shows you the Go:
+**Curious what it becomes?** `hotgrin reveal hello.hot` shows you the Go:
 
 ```
 say "Hello, world"
@@ -61,7 +62,7 @@ real program.
 
 ## The Watcher — mistakes explained kindly
 
-SimpleScript ships with an always-on checker called the **Watcher**. Its iron
+hotgrin ships with an always-on checker called the **Watcher**. Its iron
 rule: *if it flags something, it is genuinely wrong* — it never raises a false
 alarm. And it speaks your language:
 
@@ -82,30 +83,30 @@ fout   reël 1: daar is geen waarde genaamd 'discountt' hier nie — is dit 'n t
 fout   reël 2: hierdie deel deur nul, wat 'n rekenaar nie kan doen nie
 ```
 
-`run` and `build` run the Watcher first, so a beginner sees friendly SimpleScript
+`run` and `build` run the Watcher first, so a beginner sees friendly hotgrin
 messages — **never a raw Go error**.
 
 ---
 
 ## Quick start
 
-You need **[Go 1.22+](https://go.dev/dl/)** (SimpleScript uses the Go toolchain
+You need **[Go 1.22+](https://go.dev/dl/)** (hotgrin uses the Go toolchain
 under the hood).
 
 ```bash
-git clone https://github.com/Hotgrin/simplescript
-cd simplescript
-go build -o simplescript ./cmd/simplescript
+git clone https://github.com/Hotgrin/hotgrin
+cd hotgrin
+go build -o hotgrin ./cmd/hotgrin
 
-./simplescript run    examples/hello.ss          # run it
-./simplescript test   examples/calc.ss           # run its tests
-./simplescript check  examples/hello.ss          # check for problems (--af for Afrikaans)
-./simplescript build  --windows examples/shop.ss # make a Windows .exe
-./simplescript reveal examples/hello.ss          # show the Go it becomes
+./hotgrin run    examples/hello.hot          # run it
+./hotgrin test   examples/calc.hot           # run its tests
+./hotgrin check  examples/hello.hot          # check for problems (--af for Afrikaans)
+./hotgrin build  --windows examples/shop.hot # make a Windows .exe
+./hotgrin reveal examples/hello.hot          # show the Go it becomes
 ```
 
-Prefer Docker? `docker build -t simplescript .` then
-`docker run --rm -v "$PWD":/work simplescript run hello.ss`.
+Prefer Docker? `docker build -t hotgrin .` then
+`docker run --rm -v "$PWD":/work hotgrin run hello.hot`.
 
 **New to programming?** Start with the [gentle tutorial](docs/tutorial.md).
 **Coming from another language?** The
@@ -169,7 +170,7 @@ if it fails
 end try
 ```
 
-**Tests are part of the language.** `simplescript test` runs them.
+**Tests are part of the language.** `hotgrin test` runs them.
 
 ```
 test "ten percent off 100 is 90"
@@ -177,7 +178,7 @@ test "ten percent off 100 is 90"
 end test
 ```
 
-**Do things at the same time**, safely (SimpleScript guards the shared list for
+**Do things at the same time**, safely (hotgrin guards the shared list for
 you):
 
 ```
@@ -197,17 +198,18 @@ say greet with name
 ```
 
 ```bash
-simplescript run greet.ss --name AJ
+hotgrin run greet.hot --name AJ
 ```
 
 ---
 
 ## Status
 
-**v0.1 — early alpha.** The language works end to end and is well tested (70+
+**v0.2 — early alpha.** *(Renamed from "SimpleScript" in v0.2 — same language,
+better name.)* The language works end to end and is well tested (70+
 tests across six packages), but it is young: the standard library is tiny, and
 some things are not built yet. Expect rough edges — and please
-[open an issue](https://github.com/Hotgrin/simplescript/issues) when you find one.
+[open an issue](https://github.com/Hotgrin/hotgrin/issues) when you find one.
 
 **On the roadmap:** remote
 libraries (`use ... from "github.com/..."`), interactive `ask` prompts, a richer

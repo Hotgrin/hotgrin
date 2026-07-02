@@ -1,12 +1,12 @@
 # Build output
-/simplescript
-/simplescript.exe
-/sslex
-/ssparse
-/ssrun
-/sscheck
+/hotgrin
+/hotgrin.exe
+/hotlex
+/hotparse
+/hotrun
+/hotcheck
 
-# Programs built from examples (simplescript build)
+# Programs built from examples (hotgrin build)
 /hello
 /shop
 /greet

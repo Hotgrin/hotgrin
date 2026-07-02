@@ -1,7 +1,25 @@
 # Changelog
 
-All notable changes to SimpleScript are recorded here. This project follows
+All notable changes to hotgrin are recorded here. This project follows
 [Semantic Versioning](https://semver.org/) loosely while it is pre-1.0.
+
+## [0.2.0] - 2026-07-02
+
+**The language has a new name: hotgrin** (formerly SimpleScript) — the language
+that makes you grin. Same language, same promises, new identity.
+
+### Changed
+- Project renamed **SimpleScript → hotgrin**; repository is now
+  `github.com/Hotgrin/hotgrin` (the old URL redirects).
+- File extension **`.ss` → `.hot`** (`hello.ss` becomes `hello.hot`).
+- The CLI is now the `hotgrin` command (`hotgrin run hello.hot`).
+- Developer tools renamed: `hotlex`, `hotparse`, `hotrun`, `hotcheck`.
+- Browser playground rebranded; now at `hotgrin.github.io/hotgrin/playground/`.
+
+### Why
+The old name collided with several existing projects; "hotgrin" is unique,
+matches the maintainer's domain (hotgrin.com) and GitHub handle, and fits the
+language's friendly identity.
 
 ## [0.1.0] - 2026-06-30
 
@@ -25,7 +43,7 @@ program (or a Windows `.exe`).
 - Unicode identifiers and strings; English/Afrikaans messages.
 
 ### Tooling
-- `simplescript` command: `run`, `test`, `build` (`--windows` for a `.exe`),
+- `SimpleScript` command: `run`, `test`, `build` (`--windows` for a `.exe`),
   `check` (`--af` for Afrikaans), `reveal`, `help`, `version`.
 - The **Watcher**: a deterministic checker that reports only provable problems
   (unknown names, wrong argument counts, divide-by-zero, unreachable code,

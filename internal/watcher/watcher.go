@@ -1,4 +1,4 @@
-// Package watcher is SimpleScript's always-on checker.
+// Package watcher is hotgrin's always-on checker.
 //
 // It walks the tree and reports problems it can PROVE. The iron rule: if the
 // Watcher flags something, it is genuinely wrong — these rules never raise a
@@ -14,7 +14,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hotgrin/simplescript/internal/ast"
+	"github.com/hotgrin/hotgrin/internal/ast"
 )
 
 type Severity int

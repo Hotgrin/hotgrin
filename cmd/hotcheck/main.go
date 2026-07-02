@@ -1,18 +1,18 @@
-// Command sscheck runs the Watcher over a SimpleScript program and prints what
+// Command hotcheck runs the Watcher over a hotgrin program and prints what
 // it found. Use -af to see the messages in Afrikaans.
 //
-//	go run ./cmd/sscheck            # check the built-in demo (has mistakes)
-//	go run ./cmd/sscheck app.ss     # check your own program
-//	go run ./cmd/sscheck -af app.ss # messages in Afrikaans
+//	go run ./cmd/hotcheck            # check the built-in demo (has mistakes)
+//	go run ./cmd/hotcheck app.hot     # check your own program
+//	go run ./cmd/hotcheck -af app.hot # messages in Afrikaans
 package main
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/hotgrin/simplescript/internal/lexer"
-	"github.com/hotgrin/simplescript/internal/parser"
-	"github.com/hotgrin/simplescript/internal/watcher"
+	"github.com/hotgrin/hotgrin/internal/lexer"
+	"github.com/hotgrin/hotgrin/internal/parser"
+	"github.com/hotgrin/hotgrin/internal/watcher"
 )
 
 // The demo deliberately contains several provable mistakes.

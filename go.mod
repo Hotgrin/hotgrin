@@ -1,3 +1,3 @@
-module github.com/hotgrin/simplescript
+module github.com/hotgrin/hotgrin
 
 go 1.22

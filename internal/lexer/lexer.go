@@ -5,9 +5,9 @@ import (
 	"unicode"
 )
 
-// Lexer reads SimpleScript source and produces a flat slice of tokens.
+// Lexer reads hotgrin source and produces a flat slice of tokens.
 //
-// SimpleScript is line-oriented, so the lexer works one line at a time. Within
+// hotgrin is line-oriented, so the lexer works one line at a time. Within
 // a line it tokenises in two clear stages:
 //
 //	Stage 1 (lineToAtoms): split the line's characters into raw "atoms" —

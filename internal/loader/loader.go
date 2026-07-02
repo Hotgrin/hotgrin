@@ -1,7 +1,7 @@
-// Package loader turns a SimpleScript source file plus everything it `use`s
+// Package loader turns a hotgrin source file plus everything it `use`s
 // into a single combined program, ready for the checker and transpiler.
 //
-// A library is just another .ss file. When a program uses one, the library's
+// A library is just another .hot file. When a program uses one, the library's
 // actions are merged into the program (whole-program transpile). Paths are
 // resolved relative to the importing file, and each file is loaded once even if
 // several files use it. Remote (e.g. GitHub) libraries are not fetched yet.
@@ -13,9 +13,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hotgrin/simplescript/internal/ast"
-	"github.com/hotgrin/simplescript/internal/lexer"
-	"github.com/hotgrin/simplescript/internal/parser"
+	"github.com/hotgrin/hotgrin/internal/ast"
+	"github.com/hotgrin/hotgrin/internal/lexer"
+	"github.com/hotgrin/hotgrin/internal/parser"
 )
 
 type loader struct {
@@ -78,12 +78,12 @@ func (l *loader) load(path string, isMain bool) []ast.Stmt {
 func (l *loader) loadUse(u *ast.UseStmt, fromDir string) {
 	if strings.Contains(u.Path, "://") || strings.HasPrefix(u.Path, "github.com/") {
 		l.errs = append(l.errs,
-			fmt.Sprintf("remote libraries aren't supported yet (%q) — use a local .ss file path", u.Path))
+			fmt.Sprintf("remote libraries aren't supported yet (%q) — use a local .hot file path", u.Path))
 		return
 	}
 	p := u.Path
-	if !strings.HasSuffix(p, ".ss") {
-		p += ".ss"
+	if !strings.HasSuffix(p, ".hot") {
+		p += ".hot"
 	}
 	if !filepath.IsAbs(p) {
 		p = filepath.Join(fromDir, p)

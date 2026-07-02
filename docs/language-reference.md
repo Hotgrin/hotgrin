@@ -1,8 +1,8 @@
-# SimpleScript language reference (v0.1)
+# hotgrin language reference (v0.1)
 
 A precise reference for the current implementation. For a gentle introduction,
-see the [tutorial](tutorial.md). SimpleScript transpiles to Go; each section
-notes the mapping, and `simplescript reveal file.ss` shows the exact output for
+see the [tutorial](tutorial.md). hotgrin transpiles to Go; each section
+notes the mapping, and `hotgrin reveal file.hot` shows the exact output for
 your program.
 
 ## Lexical structure
@@ -24,7 +24,7 @@ your program.
 
 Types are inferred and hidden (no annotations in v0.1). The ladder:
 
-| SimpleScript value | Go type |
+| hotgrin value | Go type |
 |---|---|
 | `"text"` | `string` |
 | `42` | `int` |
@@ -132,7 +132,7 @@ end test
 ```
 Assertions: `to be`, `to be at least`, `to be at most`, `to be less than`,
 `to be greater than`, `contains`. Tests emit to a generated `_test.go`;
-`simplescript test file.ss` runs them via `go test`. Int/float mismatches in
+`hotgrin test file.hot` runs them via `go test`. Int/float mismatches in
 assertions are reconciled automatically.
 
 ### Concurrency
@@ -157,14 +157,14 @@ input loud as truth
 Types: `text`, `whole` (int), `number`/`decimal` (float64), `truth` (bool).
 Inputs become Go `flag` declarations at the top of `main()`; the program gets
 `--name`-style options and a generated `--help`. Pass values through the CLI:
-`simplescript run app.ss --name AJ`.
+`hotgrin run app.hot --name AJ`.
 
 ### Libraries
 ```
-use "lib/textutils"             # path relative to the importing file (.ss optional)
+use "lib/textutils"             # path relative to the importing file (.hot optional)
 use textutils from "lib/textutils"
 ```
-A library is a plain `.ss` file; its **actions** are merged into the consuming
+A library is a plain `.hot` file; its **actions** are merged into the consuming
 program (whole-program transpile). Transitive `use` works; each file loads once
 (cycles and diamonds are safe); the Watcher checks imported code too. Non-action
 top-level statements in a library are ignored. Remote paths (GitHub/URLs) are
@@ -200,12 +200,12 @@ Severities: `error` blocks run/build; `warning` and suggestions do not.
 ## The CLI
 
 ```
-simplescript run     <file.ss> [--flags for your program]
-simplescript test    <file.ss>
-simplescript build   [--windows] <file.ss>
-simplescript check   [--af] <file.ss>
-simplescript reveal  <file.ss>
-simplescript version | help
+hotgrin run     <file.hot> [--flags for your program]
+hotgrin test    <file.hot>
+hotgrin build   [--windows] <file.hot>
+hotgrin check   [--af] <file.hot>
+hotgrin reveal  <file.hot>
+hotgrin version | help
 ```
 
 ## Not in v0.1 (roadmap)

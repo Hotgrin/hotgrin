@@ -1,14 +1,14 @@
-// Command simplescript is the friendly front door to the whole toolchain.
+// Command hotgrin is the friendly front door to the whole toolchain.
 //
-//	simplescript run     hello.ss      run a program
-//	simplescript build   hello.ss      build a standalone program
-//	simplescript build --windows x.ss  build a Windows .exe
-//	simplescript check   hello.ss      check a program for problems
-//	simplescript reveal  hello.ss      show the Go a program turns into
-//	simplescript help                  show help
+//	hotgrin run     hello.hot      run a program
+//	hotgrin build   hello.hot      build a standalone program
+//	hotgrin build --windows x.hot  build a Windows .exe
+//	hotgrin check   hello.hot      check a program for problems
+//	hotgrin reveal  hello.hot      show the Go a program turns into
+//	hotgrin help                  show help
 //
 // It runs the Watcher before running or building, so a beginner sees friendly
-// SimpleScript messages — never raw Go errors.
+// hotgrin messages — never raw Go errors.
 package main
 
 import (
@@ -18,13 +18,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hotgrin/simplescript/internal/ast"
-	"github.com/hotgrin/simplescript/internal/loader"
-	"github.com/hotgrin/simplescript/internal/transpiler"
-	"github.com/hotgrin/simplescript/internal/watcher"
+	"github.com/hotgrin/hotgrin/internal/ast"
+	"github.com/hotgrin/hotgrin/internal/loader"
+	"github.com/hotgrin/hotgrin/internal/transpiler"
+	"github.com/hotgrin/hotgrin/internal/watcher"
 )
 
-const version = "SimpleScript 0.1 (clean rebuild)"
+const version = "hotgrin 0.2.0"
 
 func main() {
 	af := false
@@ -77,31 +77,31 @@ func main() {
 	case "reveal":
 		cmdReveal(file, lang)
 	default:
-		fmt.Fprintf(os.Stderr, "I don't know the command %q. Try: simplescript help\n", cmd)
+		fmt.Fprintf(os.Stderr, "I don't know the command %q. Try: hotgrin help\n", cmd)
 		os.Exit(1)
 	}
 }
 
 func printHelp() {
-	fmt.Print(`SimpleScript - a programming language that reads like plain English.
+	fmt.Print(`hotgrin - a programming language that reads like plain English.
 
 Usage:
-  simplescript run     <file.ss>     Run a program (extra --flags pass to it)
-  simplescript test    <file.ss>     Run the tests in a program
-  simplescript build   <file.ss>     Build a standalone program you can share
-  simplescript check   <file.ss>     Check a program for problems
-  simplescript reveal  <file.ss>     Show the Go code a program becomes
-  simplescript help                  Show this help
-  simplescript version               Show the version
+  hotgrin run     <file.hot>     Run a program (extra --flags pass to it)
+  hotgrin test    <file.hot>     Run the tests in a program
+  hotgrin build   <file.hot>     Build a standalone program you can share
+  hotgrin check   <file.hot>     Check a program for problems
+  hotgrin reveal  <file.hot>     Show the Go code a program becomes
+  hotgrin help                  Show this help
+  hotgrin version               Show the version
 
 Options:
   --windows    With 'build', make a Windows .exe
   --af         Show messages in Afrikaans
 
 Examples:
-  simplescript run hello.ss
-  simplescript build --windows hello.ss
-  simplescript check --af hello.ss
+  hotgrin run hello.hot
+  hotgrin build --windows hello.hot
+  hotgrin check --af hello.hot
 `)
 }
 
@@ -109,7 +109,7 @@ Examples:
 // missing file or parse problems.
 func load(file string) *ast.Program {
 	if file == "" {
-		fmt.Fprintln(os.Stderr, "Please tell me which file, e.g.  simplescript run hello.ss")
+		fmt.Fprintln(os.Stderr, "Please tell me which file, e.g.  hotgrin run hello.hot")
 		os.Exit(1)
 	}
 	if _, err := os.Stat(file); err != nil {
@@ -203,7 +203,7 @@ func cmdTest(file, lang string) {
 	defer os.RemoveAll(dir)
 	_ = os.WriteFile(filepath.Join(dir, "main.go"), []byte(mainSrc), 0o644)
 	_ = os.WriteFile(filepath.Join(dir, "main_test.go"), []byte(testSrc), 0o644)
-	_ = os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module ssprogram\n\ngo 1.22\n"), 0o644)
+	_ = os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module hotprogram\n\ngo 1.22\n"), 0o644)
 
 	c := exec.Command("go", "test", "-v", ".")
 	c.Dir = dir
@@ -228,7 +228,7 @@ func cmdBuild(file, lang string, windows bool) {
 		os.Exit(1)
 	}
 
-	base := strings.TrimSuffix(filepath.Base(file), ".ss")
+	base := strings.TrimSuffix(filepath.Base(file), ".hot")
 	out := base
 	if windows {
 		out += ".exe"
@@ -252,19 +252,19 @@ func cmdBuild(file, lang string, windows bool) {
 }
 
 func tempModule(goSrc string) string {
-	dir, err := os.MkdirTemp("", "simplescript")
+	dir, err := os.MkdirTemp("", "hotgrin")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 	_ = os.WriteFile(filepath.Join(dir, "main.go"), []byte(goSrc), 0o644)
-	_ = os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module ssprogram\n\ngo 1.22\n"), 0o644)
+	_ = os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module hotprogram\n\ngo 1.22\n"), 0o644)
 	return dir
 }
 
 func haveGo() bool {
 	if _, err := exec.LookPath("go"); err != nil {
-		fmt.Fprintln(os.Stderr, "To run or build programs, SimpleScript needs Go installed for now.")
+		fmt.Fprintln(os.Stderr, "To run or build programs, hotgrin needs Go installed for now.")
 		fmt.Fprintln(os.Stderr, "Get it from https://go.dev/dl/ , then try again.")
 		return false
 	}

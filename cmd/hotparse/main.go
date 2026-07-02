@@ -1,16 +1,16 @@
-// Command ssparse shows the parser at work: it reads a SimpleScript program
+// Command hotparse shows the parser at work: it reads a hotgrin program
 // and prints the abstract syntax tree (AST) as a readable S-expression.
 //
-//	go run ./cmd/ssparse            # parse the built-in demo
-//	go run ./cmd/ssparse myapp.ss   # parse your own file
+//	go run ./cmd/hotparse            # parse the built-in demo
+//	go run ./cmd/hotparse myapp.hot   # parse your own file
 package main
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/hotgrin/simplescript/internal/lexer"
-	"github.com/hotgrin/simplescript/internal/parser"
+	"github.com/hotgrin/hotgrin/internal/lexer"
+	"github.com/hotgrin/hotgrin/internal/parser"
 )
 
 const demo = `say "Hello, world"

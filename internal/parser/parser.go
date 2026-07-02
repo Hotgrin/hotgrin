@@ -13,8 +13,8 @@ package parser
 import (
 	"fmt"
 
-	"github.com/hotgrin/simplescript/internal/ast"
-	"github.com/hotgrin/simplescript/internal/lexer"
+	"github.com/hotgrin/hotgrin/internal/ast"
+	"github.com/hotgrin/hotgrin/internal/lexer"
 )
 
 // Error is a parse problem, with the line so messages can point at the source.

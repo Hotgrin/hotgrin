@@ -1,4 +1,4 @@
-# Your first SimpleScript program — a gentle tutorial
+# Your first hotgrin program — a gentle tutorial
 
 Welcome! This tutorial takes you from nothing to a real, working program — and
 then to a program you can *share* as a Windows `.exe`. No programming experience
@@ -6,21 +6,21 @@ needed. Every example here really runs.
 
 ## 0. Setting up (one time only)
 
-1. Install **Go** from [go.dev/dl](https://go.dev/dl/) (SimpleScript uses it
+1. Install **Go** from [go.dev/dl](https://go.dev/dl/) (hotgrin uses it
    behind the scenes — you will never have to write any Go).
-2. Download SimpleScript and build the command:
+2. Download hotgrin and build the command:
 
 ```bash
-git clone https://github.com/Hotgrin/simplescript
-cd simplescript
-go build -o simplescript ./cmd/simplescript
+git clone https://github.com/Hotgrin/hotgrin
+cd hotgrin
+go build -o hotgrin ./cmd/hotgrin
 ```
 
-That's it. You now have a `simplescript` command (on Windows: `simplescript.exe`).
+That's it. You now have a `hotgrin` command (on Windows: `hotgrin.exe`).
 
 ## 1. Say hello
 
-Make a file called `mine.ss` with one line:
+Make a file called `mine.hot` with one line:
 
 ```
 say "Hello, world"
@@ -29,7 +29,7 @@ say "Hello, world"
 Run it:
 
 ```bash
-./simplescript run mine.ss
+./hotgrin run mine.hot
 ```
 
 `say` shows something on the screen. Anything in quotes is **text**.
@@ -103,7 +103,7 @@ say greet with "the whole world"
 
 ## 6. When things can go wrong
 
-Real programs face problems: a file is missing, a number is zero. SimpleScript
+Real programs face problems: a file is missing, a number is zero. hotgrin
 makes handling that honest and gentle:
 
 ```
@@ -124,7 +124,7 @@ end try
 
 `give back problem "..."` says "this went wrong". A `try ... if it fails` block
 catches it — `the problem` holds the message. And here's the kind part: if you
-*forget* the `try`, SimpleScript stops you **before running** with a friendly
+*forget* the `try`, hotgrin stops you **before running** with a friendly
 note, so a failure can never slip past silently.
 
 ## 7. Check your own work: tests
@@ -138,7 +138,7 @@ end test
 ```
 
 ```bash
-./simplescript test mine.ss
+./hotgrin test mine.hot
 ```
 
 You'll see a green PASS — or a plain-English explanation of what didn't match.
@@ -153,7 +153,7 @@ say totall
 ```
 
 ```bash
-./simplescript check mine.ss
+./hotgrin check mine.hot
 ```
 
 ```
@@ -161,7 +161,7 @@ error   line 2: there is no value called 'totall' here — is it a typo, or did 
 ```
 
 The Watcher only speaks when it is *sure* something is wrong — it never nags
-about things that are fine. Prefer Afrikaans? `./simplescript check --af mine.ss`.
+about things that are fine. Prefer Afrikaans? `./hotgrin check --af mine.hot`.
 
 ## 9. Take inputs, share your program
 
@@ -171,14 +171,14 @@ say "Hello, " plus name
 ```
 
 ```bash
-./simplescript run mine.ss --name AJ
+./hotgrin run mine.hot --name AJ
 ```
 
 And when you're proud of it, make a real program file you can give to anyone:
 
 ```bash
-./simplescript build mine.ss              # a program for this computer
-./simplescript build --windows mine.ss    # a Windows .exe
+./hotgrin build mine.hot              # a program for this computer
+./hotgrin build --windows mine.hot    # a Windows .exe
 ```
 
 The person you give it to needs nothing installed — it just runs.
@@ -186,10 +186,10 @@ The person you give it to needs nothing installed — it just runs.
 ## 10. Where to next?
 
 - Split reusable actions into their own file and `use "myhelpers"` to share them.
-- Peek behind the curtain any time: `./simplescript reveal mine.ss` shows the
+- Peek behind the curtain any time: `./hotgrin reveal mine.hot` shows the
   real Go code your program becomes. Nothing is hidden.
 - Read the [language reference](language-reference.md) for every construct.
 
 Happy building! And if something confuses you, that's a documentation bug —
-please [open an issue](https://github.com/Hotgrin/simplescript/issues) and tell
+please [open an issue](https://github.com/Hotgrin/hotgrin/issues) and tell
 us.

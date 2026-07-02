@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SimpleScript Playground — write English, watch it become Go</title>
+<title>hotgrin Playground — write English, watch it become Go</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -76,7 +76,7 @@
 <div id="loading"><div class="spin"></div>Waking up the transpiler…</div>
 
 <header>
-  <span class="brand"><a href="https://github.com/Hotgrin/simplescript">SimpleScript<span class="dot">.</span></a></span>
+  <span class="brand"><a href="https://github.com/Hotgrin/hotgrin">hotgrin<span class="dot">.</span></a></span>
   <span class="tag">write English on the left — watch real Go appear on the right</span>
   <select id="examples" title="Load an example">
     <option value="hello">Hello, world</option>
@@ -88,13 +88,13 @@
   <div class="langflip" title="Watcher language">
     <button id="en" class="on">English</button><button id="af">Afrikaans</button>
   </div>
-  <a class="gh" href="https://github.com/Hotgrin/simplescript">GitHub ↗</a>
+  <a class="gh" href="https://github.com/Hotgrin/hotgrin">GitHub ↗</a>
 </header>
 
 <main>
   <section class="desk">
     <div class="desklabel">You write <span class="arrow">→</span></div>
-    <textarea id="src" spellcheck="false" aria-label="SimpleScript source"></textarea>
+    <textarea id="src" spellcheck="false" aria-label="hotgrin source"></textarea>
   </section>
   <section class="desk">
     <div class="desklabel"><span class="arrow">→</span> It becomes (real Go)</div>
@@ -165,8 +165,8 @@ const src = document.getElementById('src'),
       pip = document.getElementById('pip');
 
 function render(){
-  if(!window.simplescriptReady) return;
-  const r = transpileSS(src.value);
+  if(!window.hotgrinReady) return;
+  const r = transpileHot(src.value);
   const code = (r.goCode||'') + (r.testCode ? '\n// ---- main_test.go ----\n'+r.testCode : '');
   out.textContent = code || '// (fix the notes below to see the Go)';
   out.classList.remove('updated'); void out.offsetWidth; out.classList.add('updated');
@@ -199,7 +199,7 @@ function flip(){document.getElementById('en').classList.toggle('on',lang==='en')
 const go = new Go();
 WebAssembly.instantiateStreaming(fetch('playground.wasm'), go.importObject).then(res=>{
   go.run(res.instance);
-  const wait = setInterval(()=>{ if(window.simplescriptReady){
+  const wait = setInterval(()=>{ if(window.hotgrinReady){
     clearInterval(wait);
     document.getElementById('loading').remove();
     src.value = EXAMPLES.hello;
