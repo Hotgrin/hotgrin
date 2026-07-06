@@ -92,6 +92,9 @@ type Transpiler struct {
 	needTestStrings bool
 	needErrors      bool
 	needFlag        bool
+	needAsk         bool
+	needOS          bool
+	needRound       bool
 	inFallible      bool // currently emitting a fallible function body
 	fallibleRet     ssType
 
@@ -212,6 +215,9 @@ func (t *Transpiler) format(src string) string {
 
 func (t *Transpiler) imports() []string {
 	var out []string
+	if t.needAsk {
+		out = append(out, "bufio")
+	}
 	if t.needErrors {
 		out = append(out, "errors")
 	}
@@ -221,7 +227,16 @@ func (t *Transpiler) imports() []string {
 	if t.needFmt {
 		out = append(out, "fmt")
 	}
-	if t.needStrings {
+	if t.needStrings && !t.needAsk {
+		out = append(out, "strings")
+	}
+	if t.needRound {
+		out = append(out, "math")
+	}
+	if t.needAsk || t.needOS {
+		out = append(out, "os")
+	}
+	if t.needAsk {
 		out = append(out, "strings")
 	}
 	if t.needSync {
@@ -232,6 +247,14 @@ func (t *Transpiler) imports() []string {
 
 func (t *Transpiler) helpers() string {
 	var b strings.Builder
+	if t.needAsk {
+		b.WriteString("var stdinReader = bufio.NewReader(os.Stdin)\n\n")
+	}
+	if t.needRound {
+		b.WriteString("func roundTo(v float64, places int) float64 {\n")
+		b.WriteString("\tp := math.Pow(10, float64(places))\n")
+		b.WriteString("\treturn math.Round(v*p) / p\n}\n\n")
+	}
 	if t.needItemOf {
 		b.WriteString("func itemOf[T any](s []T, i int) T {\n")
 		b.WriteString("\tvar zero T\n")
@@ -306,6 +329,95 @@ func (t *Transpiler) seedTopLevelVars() {
 			}
 		case *ast.InputStmt:
 			t.scope[sanitize(n.Name)] = inputType(n.Type)
+		case *ast.AskStmt:
+			t.scope[sanitize(n.Var)] = tString
+		}
+	}
+}
+
+// refineBody walks an action body with a simulated local scope, filling any
+// still-unknown parameter types of called actions from argument types.
+func (t *Transpiler) refineBody(stmts []ast.Stmt) {
+	for _, st := range stmts {
+		switch n := st.(type) {
+		case *ast.SetStmt:
+			t.refineExpr(n.Value)
+			t.scope[sanitize(n.Name)] = t.typeOf(n.Value)
+		case *ast.SayStmt:
+			t.refineExpr(n.Value)
+		case *ast.IncreaseStmt:
+			t.refineExpr(n.Target)
+			t.refineExpr(n.Amount)
+		case *ast.PutStmt:
+			t.refineExpr(n.Value)
+			t.refineExpr(n.List)
+		case *ast.GiveBackStmt:
+			t.refineExpr(n.Value)
+		case *ast.ExprStmt:
+			t.refineExpr(n.Value)
+		case *ast.AskStmt:
+			t.scope[sanitize(n.Var)] = tString
+		case *ast.StopStmt:
+			t.refineExpr(n.Message)
+		case *ast.IfStmt:
+			for _, c := range n.Clauses {
+				t.refineExpr(c.Cond)
+				t.refineBody(c.Body)
+			}
+			t.refineBody(n.Else)
+		case *ast.RepeatTimesStmt:
+			t.refineExpr(n.Count)
+			t.refineBody(n.Body)
+		case *ast.RepeatWhileStmt:
+			t.refineExpr(n.Cond)
+			t.refineBody(n.Body)
+		case *ast.ForEachStmt:
+			t.refineExpr(n.Iterable)
+			it := t.typeOf(n.Iterable)
+			if it.kind == "list" && it.elem != nil {
+				t.scope[sanitize(n.Var)] = *it.elem
+			}
+			t.refineBody(n.Body)
+		case *ast.TryStmt:
+			t.refineBody(n.Body)
+			t.refineBody(n.Handler)
+		}
+	}
+}
+
+func (t *Transpiler) refineExpr(e ast.Expr) {
+	switch x := e.(type) {
+	case *ast.CallExpr:
+		for _, a := range x.Args {
+			t.refineExpr(a)
+		}
+		key := sanitize(x.Name)
+		if sig, ok := t.funcs[key]; ok {
+			changed := false
+			for i, a := range x.Args {
+				if i < len(sig.paramTypes) && sig.paramTypes[i].kind == "unknown" {
+					ty := t.typeOf(a)
+					if ty.kind != "unknown" && ty.kind != "" {
+						sig.paramTypes[i] = ty
+						changed = true
+					}
+				}
+			}
+			if changed {
+				t.funcs[key] = sig
+			}
+		}
+	case *ast.BinaryExpr:
+		t.refineExpr(x.Left)
+		t.refineExpr(x.Right)
+	case *ast.FieldExpr:
+		t.refineExpr(x.Target)
+	case *ast.IndexExpr:
+		t.refineExpr(x.Index)
+		t.refineExpr(x.Target)
+	case *ast.ListLit:
+		for _, el := range x.Elements {
+			t.refineExpr(el)
 		}
 	}
 }
@@ -332,6 +444,29 @@ func (t *Transpiler) collectFuncs() {
 	// 2. infer param types from the first call site of each function
 	t.walkCalls(t.prog.Statements)
 
+	// 2b. refinement: an action's local variables (typed from its own params
+	// and sets) can drive parameter inference for the actions IT calls. Two
+	// passes let types flow through a chain of calls.
+	for pass := 0; pass < 2; pass++ {
+		for _, s := range t.prog.Statements {
+			a, ok := s.(*ast.ActionStmt)
+			if !ok {
+				continue
+			}
+			saved := t.scope
+			t.scope = map[string]ssType{}
+			for k, v := range saved {
+				t.scope[k] = v
+			}
+			sig := t.funcs[sanitize(a.Name)]
+			for i, pn := range a.Params {
+				t.scope[sanitize(pn)] = sig.paramTypes[i]
+			}
+			t.refineBody(a.Body)
+			t.scope = saved
+		}
+	}
+
 	// 3. infer return type from the body (with params bound)
 	for _, s := range t.prog.Statements {
 		a, ok := s.(*ast.ActionStmt)
@@ -348,6 +483,8 @@ func (t *Transpiler) collectFuncs() {
 		for i, p := range a.Params {
 			t.scope[sanitize(p)] = sig.paramTypes[i]
 		}
+		// Simulate the body's local variables so "give back <local>" infers.
+		t.refineBody(a.Body)
 		if ty, ok := t.firstGiveBackType(a.Body); ok {
 			sig.ret = ty
 			sig.hasGiveBack = true
@@ -578,6 +715,8 @@ func (t *Transpiler) typeOf(e ast.Expr) ssType {
 
 func (t *Transpiler) binaryType(x *ast.BinaryExpr) ssType {
 	switch x.Op {
+	case "rounded":
+		return tFloat
 	case "and", "or", "=", "!=", ">", "<", ">=", "<=", "contains":
 		return tBool
 	case "/":
@@ -893,6 +1032,25 @@ func (t *Transpiler) emitStmt(s ast.Stmt) string {
 		list := t.emitExpr(n.List)
 		return list + " = append(" + list + ", " + t.emitExpr(n.Value) + ")"
 
+	case *ast.AskStmt:
+		t.needAsk = true
+		t.needFmt = true
+		v := sanitize(n.Var)
+		t.scope[v] = tString
+		line := "fmt.Print(" + t.emitExpr(n.Prompt) + ", \" \")\n"
+		if t.declared[v] {
+			line += v + ", _ = stdinReader.ReadString('\\n')\n"
+		} else {
+			t.declared[v] = true
+			line += v + ", _ := stdinReader.ReadString('\\n')\n"
+		}
+		return line + v + " = strings.TrimSpace(" + v + ")"
+
+	case *ast.StopStmt:
+		t.needFmt = true
+		t.needOS = true
+		return "fmt.Fprintln(os.Stderr, " + t.emitExpr(n.Message) + ")\nos.Exit(1)"
+
 	case *ast.GiveBackStmt:
 		if n.Problem {
 			t.needErrors = true
@@ -1196,6 +1354,13 @@ func (t *Transpiler) emitExpr(e ast.Expr) string {
 
 func (t *Transpiler) emitBinary(x *ast.BinaryExpr) string {
 	switch x.Op {
+	case "rounded":
+		t.needRound = true
+		left := t.emitExpr(x.Left)
+		if t.typeOf(x.Left).kind == "int" {
+			left = "float64(" + left + ")"
+		}
+		return "roundTo(" + left + ", " + t.emitExpr(x.Right) + ")"
 	case "and":
 		return "(" + t.emitExpr(x.Left) + " && " + t.emitExpr(x.Right) + ")"
 	case "or":

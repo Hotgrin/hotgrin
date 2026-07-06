@@ -245,6 +245,27 @@ func (s *InputStmt) String() string {
 	return fmt.Sprintf("(input %q %s)", s.Name, s.Type)
 }
 
+// AskStmt prompts the person running the program and stores their answer
+// (as text) under Var: ask "What is your name?" into name.
+type AskStmt struct {
+	stmtBase
+	Prompt Expr
+	Var    string
+}
+
+func (s *AskStmt) stmtNode()      {}
+func (s *AskStmt) String() string { return "(ask " + s.Prompt.String() + " into " + s.Var + ")" }
+
+// StopStmt ends the program immediately with an error message and a non-zero
+// exit code: stop with error "no input file given".
+type StopStmt struct {
+	stmtBase
+	Message Expr
+}
+
+func (s *StopStmt) stmtNode()      {}
+func (s *StopStmt) String() string { return "(stop-with-error " + s.Message.String() + ")" }
+
 // TryStmt runs Body; if a fallible step fails, Handler runs with the error
 // available as the value "the problem".
 type TryStmt struct {

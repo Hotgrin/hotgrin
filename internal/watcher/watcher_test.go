@@ -125,6 +125,19 @@ func TestInputsAreKnownNames(t *testing.T) {
 	}
 }
 
+func TestAskDeclaresName(t *testing.T) {
+	if fs := check(t, "ask \"Name?\" into name\nsay \"Hi \" plus name"); len(fs) != 0 {
+		t.Errorf("false positive on ask-declared name: %v", fs)
+	}
+}
+
+func TestUnreachableAfterStop(t *testing.T) {
+	fs := check(t, "action f\nstop with error \"bye\"\nsay \"dead\"\nend action")
+	if !hasFinding(fs, Warning, "can never run") {
+		t.Errorf("expected unreachable-after-stop warning, got %v", fs)
+	}
+}
+
 func TestFallibleCallOutsideTry(t *testing.T) {
 	src := "action risky with x\nif x is 0\ngive back problem \"no\"\nend if\ngive back x\nend action\n" +
 		"set r to risky with 5\nsay r"

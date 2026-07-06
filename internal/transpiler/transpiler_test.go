@@ -176,6 +176,30 @@ func TestSayFallibleInsideTry(t *testing.T) {
 	}
 }
 
+func TestAskStopRounded(t *testing.T) {
+	wants(t, "ask \"Name?\" into name\nsay name",
+		"\"bufio\"", "\"strings\"", "stdinReader = bufio.NewReader(os.Stdin)",
+		"name, _ := stdinReader.ReadString('\\n')", "strings.TrimSpace(name)")
+	wants(t, "stop with error \"bad\"",
+		"fmt.Fprintln(os.Stderr, \"bad\")", "os.Exit(1)")
+	wants(t, "say 3.14159 rounded to 2",
+		"\"math\"", "func roundTo(", "roundTo(3.14159, 2)")
+	// int operand gets promoted
+	wants(t, "set x to 10\nsay x rounded to 1", "roundTo(float64(x), 1)")
+}
+
+func TestInferenceThroughActionLocals(t *testing.T) {
+	// An action's locals must drive parameter AND return inference of callees.
+	src := "input years as whole default 2\n" +
+		"action grow with r, n\nset f to 1.0\nrepeat n times\nset f to f times (1 plus r)\nend repeat\ngive back f\nend action\n" +
+		"action pay with term\nset months to term times 12\nset rate to 0.01\ngive back grow with rate, months\nend action\n" +
+		"say pay with years"
+	wants(t, src,
+		"func grow(r float64, n int) float64",
+		"func pay(term int) float64",
+	)
+}
+
 func TestErrorHandling(t *testing.T) {
 	src := "action risky with x\n" +
 		"if x is 0\ngive back problem \"no zero\"\nend if\n" +

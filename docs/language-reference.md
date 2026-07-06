@@ -1,4 +1,4 @@
-# hotgrin language reference (v0.1)
+# hotgrin language reference (v0.3)
 
 A precise reference for the current implementation. For a gentle introduction,
 see the [tutorial](tutorial.md). hotgrin transpiles to Go; each section
@@ -74,6 +74,7 @@ set xs to list of 1, 2, 3
 put 4 into xs                   # append
 say count of xs                 # len
 say item 0 of xs                # safe indexed access (0-based)
+say item i of xs                # variable indexes work too
 xs contains 3                   # membership (generated helper)
 ```
 
@@ -147,6 +148,14 @@ start <call>                    # background; program waits at exit
 Collected order is non-deterministic. Writes to shared variables inside the
 block other than `into` are unsupported.
 
+### Interactive prompts and stopping
+```
+ask "What is your name?" into name    # prints the prompt, reads a line (text)
+stop with error "no file given"       # message to stderr, exit code 1
+```
+`ask` always yields text; convert as needed. The Watcher treats code after
+`stop with error` as unreachable.
+
 ### Command-line inputs
 ```
 input name as text default "world"
@@ -178,12 +187,17 @@ Operator precedence, loosest to tightest:
 2. `and`
 3. comparisons: `is`, `is not`, `is greater than`, `is less than`,
    `is at least`, `is at most`, `contains`
-4. `plus`, `minus`
-5. `times`, `divided by`
-6. `of` (field/list access)
+4. `rounded to`
+5. `plus`, `minus`
+6. `times`, `divided by`
+7. `of` (field/list access)
 
 - `plus` is numeric addition, or concatenation when either operand is text
   (the other side is auto-converted).
+- `<expr> rounded to <n>` rounds to n decimal places (always yields a decimal).
+  It binds looser than arithmetic — `a plus b rounded to 2` rounds the sum —
+  but tighter than comparisons. To round a call's result, parenthesise the
+  call: `(monthly payment with a, r, y) rounded to 2`.
 - Parentheses group. Calls use `name with arg, arg`.
 
 ## The Watcher
@@ -210,6 +224,5 @@ hotgrin version | help
 
 ## Not in v0.1 (roadmap)
 
-Interactive `ask` prompts · `stop with error` · remote libraries · type
-annotations · units of measure · a browser playground · the Assessor and
-AI-mentor checking layers.
+Remote libraries · type annotations · units of measure · an interpreter mode
+(no Go install) · the Assessor and AI-mentor checking layers.

@@ -3,6 +3,33 @@
 All notable changes to hotgrin are recorded here. This project follows
 [Semantic Versioning](https://semver.org/) loosely while it is pre-1.0.
 
+## [0.3.0] - 2026-07-04
+
+Interactive programs, tidy numbers, and smarter inference — every item driven
+by real use.
+
+### Added
+- **`ask`** — interactive prompts: `ask "What is your name?" into name`.
+  Answers arrive as text, trimmed. (`hotgrin run` now passes stdin through.)
+- **`stop with error "message"`** — end the program with a message on stderr
+  and exit code 1. The Watcher knows code after it can never run.
+- **`rounded to`** — number formatting at last: `payment rounded to 2` gives
+  `2666.07`. Binds looser than arithmetic, so `a plus b rounded to 2` rounds
+  the sum. (To round a call's result, wrap it in parentheses first.)
+- **Variable list indexing** — `item i of scores` now works, including
+  multi-word index names (`item current pos of scores`).
+
+### Improved
+- **Deeper type inference** — an action's local variables now drive parameter
+  and return inference for the actions it calls. The loan-calculator example
+  gets its `growth factor` helper action back thanks to this.
+- **Cleaner failures** — `hotgrin run` executes a compiled binary directly, so
+  a `stop with error` shows only *your* message (no more `exit status 1`
+  noise), and your program's exit code is passed through faithfully.
+
+### Fixed
+- The `version` command now reports the right version.
+
 ## [0.2.0] - 2026-07-02
 
 **The language has a new name: hotgrin** (formerly SimpleScript) — the language

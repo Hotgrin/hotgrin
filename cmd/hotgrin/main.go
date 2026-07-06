@@ -24,7 +24,7 @@ import (
 	"github.com/hotgrin/hotgrin/internal/watcher"
 )
 
-const version = "hotgrin 0.2.0"
+const version = "hotgrin 0.3.0"
 
 func main() {
 	af := false
@@ -175,12 +175,23 @@ func cmdRun(file, lang string, progArgs []string) {
 	if !haveGo() {
 		os.Exit(1)
 	}
-	runArgs := append([]string{"run", "."}, progArgs...)
-	c := exec.Command("go", runArgs...)
-	c.Dir = dir
+	// Build to a temp binary and run it directly: 'go run' would append its
+	// own "exit status 1" noise to stderr, which breaks our no-raw-Go promise.
+	bin := filepath.Join(dir, "program")
+	build := exec.Command("go", "build", "-o", bin, ".")
+	build.Dir = dir
+	build.Stderr = os.Stderr
+	if err := build.Run(); err != nil {
+		os.Exit(1)
+	}
+	c := exec.Command(bin, progArgs...)
+	c.Stdin = os.Stdin // so 'ask' can read the person's answers
 	c.Stdout = os.Stdout
 	c.Stderr = os.Stderr
 	if err := c.Run(); err != nil {
+		if ee, ok := err.(*exec.ExitError); ok {
+			os.Exit(ee.ExitCode())
+		}
 		os.Exit(1)
 	}
 }

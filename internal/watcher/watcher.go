@@ -190,6 +190,8 @@ func (w *Watcher) collectNames(stmts []ast.Stmt, names map[string]bool) {
 			names[n.Name] = true
 		case *ast.InputStmt:
 			names[n.Name] = true
+		case *ast.AskStmt:
+			names[n.Var] = true
 		case *ast.IfStmt:
 			for _, c := range n.Clauses {
 				w.collectNames(c.Body, names)
@@ -239,6 +241,11 @@ func (w *Watcher) checkBlock(stmts []ast.Stmt, names map[string]bool, inTry bool
 		case *ast.GiveBackStmt:
 			w.checkExpr(n.Value, names)
 			gaveBack = true
+		case *ast.AskStmt:
+			w.checkExpr(n.Prompt, names)
+		case *ast.StopStmt:
+			w.checkExpr(n.Message, names)
+			gaveBack = true // nothing after a stop can run
 		case *ast.ExprStmt:
 			w.checkFallibleUse(n.Value, inTry)
 			w.checkExpr(n.Value, names)
@@ -418,6 +425,10 @@ func (w *Watcher) checkUnused(stmts []ast.Stmt, names map[string]bool) {
 				useExpr(n.List)
 			case *ast.GiveBackStmt:
 				useExpr(n.Value)
+			case *ast.AskStmt:
+				useExpr(n.Prompt)
+			case *ast.StopStmt:
+				useExpr(n.Message)
 			case *ast.ExprStmt:
 				useExpr(n.Value)
 			case *ast.IfStmt:

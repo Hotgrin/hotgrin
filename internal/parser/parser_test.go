@@ -40,6 +40,27 @@ func TestParseUse(t *testing.T) {
 	}
 }
 
+func TestParseV03Features(t *testing.T) {
+	got := parse(t, "ask \"Name?\" into name\nstop with error \"bye\"")
+	for _, want := range []string{`(ask (str "Name?") into name)`, `(stop-with-error (str "bye"))`} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %q in:\n%s", want, got)
+		}
+	}
+	// variable list index: "item i of xs"
+	if got := parse(t, "say item i of xs"); !strings.Contains(got, "(item (id i) (id xs))") {
+		t.Errorf("variable index not parsed: %s", got)
+	}
+	// multi-word variable index
+	if got := parse(t, "say item current pos of xs"); !strings.Contains(got, "(item (id current pos) (id xs))") {
+		t.Errorf("multi-word variable index not parsed: %s", got)
+	}
+	// rounded to binds looser than arithmetic
+	if got := parse(t, "say a plus b rounded to 2"); !strings.Contains(got, "(rounded (+ (id a) (id b)) (num 2))") {
+		t.Errorf("rounded precedence wrong: %s", got)
+	}
+}
+
 func TestParseTryAndProblem(t *testing.T) {
 	got := parse(t, "try\nset x to f with 1\nif it fails\nsay the problem\nend try")
 	for _, want := range []string{"(try", "(if-it-fails", "(id the problem)"} {

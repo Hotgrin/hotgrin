@@ -5,21 +5,12 @@ programs keeps teaching us what matters next. Dates are deliberately absent:
 each release ships when it's ready and tested, and small honest releases beat
 big late ones.
 
-## v0.3 — everyday completeness
+## v0.3 — everyday completeness ✅ shipped
 
-The gaps you hit in your first week of real use:
-
-- **`ask`** — interactive prompts (`ask "What is your name?" into name`), so
-  programs can talk to the person running them.
-- **`stop with error`** — exit a program cleanly with a message.
-- **Number formatting** — a way to say `R2666.07` instead of
-  `R2666.0740787821514`. The loan-calculator example is the motivating case.
-- **List index by variable** — today `item 0 of scores` works but
-  `item i of scores` does not (the words `item i` read as one name). Known
-  gap; needs a small grammar decision.
-- **Deeper type inference** — action-local variables passed as arguments to
-  other actions don't yet drive parameter inference (top-level values do).
-- **More cookbook recipes**, grown from real questions.
+`ask` · `stop with error` · `rounded to` number formatting · variable list
+indexing · deeper type inference — all landed in v0.3.0 (see the
+[changelog](CHANGELOG.md)). Still growing continuously: cookbook recipes and
+Watcher rules.
 
 ## v0.4 — the ecosystem door
 

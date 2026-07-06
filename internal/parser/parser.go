@@ -12,6 +12,7 @@ package parser
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/hotgrin/hotgrin/internal/ast"
 	"github.com/hotgrin/hotgrin/internal/lexer"
@@ -153,10 +154,10 @@ func (p *Parser) parseStatementInner() ast.Stmt {
 		return p.parseInput()
 	case lexer.USE:
 		return p.parseUse()
-	case lexer.ASK, lexer.STOP_WITH_ERROR:
-		p.errorf("'%s' is not supported by this parser version yet", p.cur().Literal)
-		p.recover()
-		return nil
+	case lexer.ASK:
+		return p.parseAsk()
+	case lexer.STOP_WITH_ERROR:
+		return p.parseStop()
 	default:
 		// A bare expression statement, e.g. a call: greet with "AJ"
 		expr := p.parseExpr(0)
@@ -235,6 +236,19 @@ func (p *Parser) parseUse() ast.Stmt {
 	}
 	p.errorf("expected a library path in quotes after 'use'")
 	return stmt
+}
+
+func (p *Parser) parseAsk() ast.Stmt {
+	p.expect(lexer.ASK)
+	prompt := p.parseExpr(0)
+	p.expect(lexer.INTO)
+	name := p.expect(lexer.IDENT).Literal
+	return &ast.AskStmt{Prompt: prompt, Var: name}
+}
+
+func (p *Parser) parseStop() ast.Stmt {
+	p.expect(lexer.STOP_WITH_ERROR)
+	return &ast.StopStmt{Message: p.parseExpr(0)}
 }
 
 func (p *Parser) parseTry() ast.Stmt {
@@ -456,7 +470,7 @@ func (p *Parser) parseBlock() []ast.Stmt {
 
 // --- expressions (Pratt) ------------------------------------------------
 
-const ofPrec = 6 // "of" binds tighter than arithmetic
+const ofPrec = 7 // "of" binds tighter than arithmetic
 
 func infixPrec(t lexer.TokenType) int {
 	switch t {
@@ -467,10 +481,12 @@ func infixPrec(t lexer.TokenType) int {
 	case lexer.IS, lexer.IS_NOT, lexer.IS_GREATER_THAN, lexer.IS_LESS_THAN,
 		lexer.IS_AT_LEAST, lexer.IS_AT_MOST, lexer.CONTAINS:
 		return 3
+	case lexer.ROUNDED_TO:
+		return 4 // looser than arithmetic: "a plus b rounded to 2" rounds the sum
 	case lexer.PLUS, lexer.MINUS:
-		return 4
-	case lexer.TIMES, lexer.DIVIDED_BY:
 		return 5
+	case lexer.TIMES, lexer.DIVIDED_BY:
+		return 6
 	case lexer.OF:
 		return ofPrec
 	}
@@ -501,6 +517,8 @@ func opSymbol(t lexer.TokenType) string {
 		return "<="
 	case lexer.CONTAINS:
 		return "contains"
+	case lexer.ROUNDED_TO:
+		return "rounded"
 	case lexer.AND:
 		return "and"
 	case lexer.OR:
@@ -578,6 +596,14 @@ func (p *Parser) parsePrimary() ast.Expr {
 	case lexer.IDENT:
 		name := p.advance().Literal
 
+		// A multi-word name beginning "item ..." followed by 'of' is a
+		// variable index: "item i of scores" (the lexer glued "item i").
+		if strings.HasPrefix(name, "item ") && p.is(lexer.OF) {
+			p.advance() // of
+			target := p.parsePrimary()
+			idx := &ast.Identifier{Name: strings.TrimPrefix(name, "item "), Line: line}
+			return &ast.IndexExpr{Index: idx, Target: target}
+		}
 		// "item N of target" — but only when an index follows. If 'item' is
 		// directly followed by 'of', it's a field name ("item of order").
 		if name == "item" && !p.is(lexer.OF) {

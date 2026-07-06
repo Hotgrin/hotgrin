@@ -187,6 +187,24 @@ end test
 
 Run it: `hotgrin test recipe.hot`
 
+## 16. Have a conversation
+
+```
+ask "What is your name?" into name
+ask "And your favourite colour?" into colour
+say "Nice to meet you, " plus name plus " — " plus colour plus " is a good choice."
+```
+
+## 17. Money that looks like money
+
+```
+set price to 1234.5678
+say "R" plus (price rounded to 2)
+
+set third to 10 divided by 3
+say third plus " is about " plus (third rounded to 3)
+```
+
 ---
 
 Want a recipe that isn't here? [Open an issue](https://github.com/Hotgrin/hotgrin/issues)

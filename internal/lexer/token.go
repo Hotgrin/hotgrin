@@ -89,6 +89,7 @@ const (
 	TO_BE_AT_MOST
 	TO_BE_LESS_THAN
 	TO_BE_GREATER_THAN
+	ROUNDED_TO
 )
 
 // Token is a single lexical unit, with the line it came from so that every
@@ -125,6 +126,7 @@ var tokenNames = map[TokenType]string{
 	IS_AT_MOST: "IS_AT_MOST", CONTAINS: "CONTAINS", TO_BE: "TO_BE",
 	TO_BE_AT_LEAST: "TO_BE_AT_LEAST", TO_BE_AT_MOST: "TO_BE_AT_MOST",
 	TO_BE_LESS_THAN: "TO_BE_LESS_THAN", TO_BE_GREATER_THAN: "TO_BE_GREATER_THAN",
+	ROUNDED_TO: "ROUNDED_TO",
 }
 
 func (tt TokenType) String() string {
@@ -163,7 +165,8 @@ var reserved = map[string]TokenType{
 	"is at most": IS_AT_MOST, "is": IS, "contains": CONTAINS,
 	"to be at least": TO_BE_AT_LEAST, "to be at most": TO_BE_AT_MOST,
 	"to be less than": TO_BE_LESS_THAN, "to be greater than": TO_BE_GREATER_THAN,
-	"to be": TO_BE,
+	"rounded to": ROUNDED_TO,
+	"to be":      TO_BE,
 }
 
 // maxPhraseWords is the longest reserved phrase, in words

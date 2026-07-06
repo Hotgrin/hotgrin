@@ -16,6 +16,8 @@ hotgrin build --windows loan.hot     # share it as loan.exe
 
 - **Command-line inputs** with sensible defaults and a free `--help`
 - **An action** doing real financial maths (the amortization formula)
+- **Two actions calling each other**, with all types inferred
+- **`rounded to`** formatting money the way people expect
 - **A loop standing in for a power operator** — `(1+r)^n` built by multiplying
   in a `repeat`, with a comment explaining exactly that
 - **Multi-word names** (`monthly rate`, `total paid`, `term years`) reading like
@@ -25,6 +27,6 @@ hotgrin build --windows loan.hot     # share it as loan.exe
 
 ## Honest notes
 
-The payment prints with full decimal places (R2666.0740…) because hotgrin has
-no number-formatting helpers yet — that's on the [roadmap](../../../ROADMAP.md),
-and this project is exactly the kind that motivates it.
+As of v0.3, `rounded to` formats the answers (R2666.07) — a feature this very
+project motivated. The `growth factor` helper action also exists thanks to
+v0.3's deeper type inference, which this project exposed the need for.
