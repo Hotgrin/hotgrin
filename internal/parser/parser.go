@@ -154,6 +154,8 @@ func (p *Parser) parseStatementInner() ast.Stmt {
 		return p.parseInput()
 	case lexer.USE:
 		return p.parseUse()
+	case lexer.GO_BLOCK:
+		return &ast.GoBlockStmt{Code: p.advance().Literal}
 	case lexer.ASK:
 		return p.parseAsk()
 	case lexer.STOP_WITH_ERROR:

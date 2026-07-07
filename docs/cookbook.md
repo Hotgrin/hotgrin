@@ -205,6 +205,37 @@ set third to 10 divided by 3
 say third plus " is about " plus (third rounded to 3)
 ```
 
+## 18. Remember things between runs (files)
+
+```
+use "std/data"
+
+try
+    set notes to read file with "notes.txt"
+    say "Your notes: " plus notes
+if it fails
+    say "No notes yet - making some."
+    try
+        set saved to write file with "notes.txt", "buy milk"
+        say "Saved to " plus saved
+    if it fails
+        say "Could not save: " plus the problem
+    end try
+end try
+```
+
+## 19. Text tidy-up
+
+```
+use "std/text"
+
+set messy to "   HOWZIT, world   "
+set clean to trim spaces with messy
+say lower case with clean
+say replace all with clean, "world", "boet"
+say "letters: " plus (text length with clean)
+```
+
 ---
 
 Want a recipe that isn't here? [Open an issue](https://github.com/Hotgrin/hotgrin/issues)

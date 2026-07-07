@@ -35,8 +35,26 @@ func (l *Lexer) Tokenize() []Token {
 	normalised := strings.ReplaceAll(l.source, "\r\n", "\n")
 	lines := strings.Split(normalised, "\n")
 
+	inGo := false
+	goStart := 0
+	var goLines []string
 	for idx, raw := range lines {
 		lineNo := idx + 1
+		trimmed := strings.TrimSpace(raw)
+		if inGo {
+			if strings.EqualFold(trimmed, "end go") {
+				l.add(GO_BLOCK, strings.Join(goLines, "\n"), goStart)
+				l.add(NEWLINE, "", lineNo)
+				inGo, goLines = false, nil
+				continue
+			}
+			goLines = append(goLines, raw)
+			continue
+		}
+		if strings.EqualFold(trimmed, "use go") {
+			inGo, goStart = true, lineNo
+			continue
+		}
 		atoms := lineToAtoms(raw)
 		if len(atoms) == 0 {
 			continue // blank line or a line that was only a comment

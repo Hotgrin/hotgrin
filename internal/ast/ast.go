@@ -245,6 +245,16 @@ func (s *InputStmt) String() string {
 	return fmt.Sprintf("(input %q %s)", s.Name, s.Type)
 }
 
+// GoBlockStmt is a verbatim block of Go from 'use go ... end go'. Its funcs
+// become callable actions; single-line imports are merged with generated ones.
+type GoBlockStmt struct {
+	stmtBase
+	Code string
+}
+
+func (s *GoBlockStmt) stmtNode()      {}
+func (s *GoBlockStmt) String() string { return "(use-go ...)" }
+
 // AskStmt prompts the person running the program and stores their answer
 // (as text) under Var: ask "What is your name?" into name.
 type AskStmt struct {

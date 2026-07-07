@@ -90,6 +90,7 @@ const (
 	TO_BE_LESS_THAN
 	TO_BE_GREATER_THAN
 	ROUNDED_TO
+	GO_BLOCK // a verbatim block of Go from 'use go ... end go'
 )
 
 // Token is a single lexical unit, with the line it came from so that every
@@ -126,7 +127,7 @@ var tokenNames = map[TokenType]string{
 	IS_AT_MOST: "IS_AT_MOST", CONTAINS: "CONTAINS", TO_BE: "TO_BE",
 	TO_BE_AT_LEAST: "TO_BE_AT_LEAST", TO_BE_AT_MOST: "TO_BE_AT_MOST",
 	TO_BE_LESS_THAN: "TO_BE_LESS_THAN", TO_BE_GREATER_THAN: "TO_BE_GREATER_THAN",
-	ROUNDED_TO: "ROUNDED_TO",
+	ROUNDED_TO: "ROUNDED_TO", GO_BLOCK: "GO_BLOCK",
 }
 
 func (tt TokenType) String() string {

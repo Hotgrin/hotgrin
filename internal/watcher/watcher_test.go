@@ -125,6 +125,18 @@ func TestInputsAreKnownNames(t *testing.T) {
 	}
 }
 
+func TestGoFuncsAreKnownActions(t *testing.T) {
+	src := "use go\nfunc luckyNumber() int { return 7 }\nend go\nsay lucky number"
+	if fs := check(t, src); len(fs) != 0 {
+		t.Errorf("false positive calling a go-block func: %v", fs)
+	}
+	// fallible go funcs must be guarded by try
+	src2 := "use go\nimport \"os\"\nfunc readFile(p string) (string, error) { b, e := os.ReadFile(p); return string(b), e }\nend go\nset c to read file with \"x\"\nsay c"
+	if !hasFinding(check(t, src2), Error, "can fail") {
+		t.Errorf("expected fallible-outside-try error for go-bridged func")
+	}
+}
+
 func TestAskDeclaresName(t *testing.T) {
 	if fs := check(t, "ask \"Name?\" into name\nsay \"Hi \" plus name"); len(fs) != 0 {
 		t.Errorf("false positive on ask-declared name: %v", fs)

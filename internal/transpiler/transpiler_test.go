@@ -176,6 +176,25 @@ func TestSayFallibleInsideTry(t *testing.T) {
 	}
 }
 
+func TestUseGoBlock(t *testing.T) {
+	src := "use go\nimport \"math/rand\"\nfunc luckyNumber() int { return rand.Intn(100) }\nend go\nsay lucky number"
+	wants(t, src,
+		"\"math/rand\"",              // import merged
+		"func luckyNumber() int",     // body verbatim
+		"fmt.Println(luckyNumber())", // bare name = zero-arg call
+	)
+	out := gen(t, src)
+	if strings.Contains(out, "import \"math/rand\"\nfunc") {
+		t.Errorf("import line should be lifted out of the body:\n%s", out)
+	}
+}
+
+func TestGoFallibleBridge(t *testing.T) {
+	src := "use go\nimport \"os\"\nfunc readFile(p string) (string, error) { b, e := os.ReadFile(p); return string(b), e }\nend go\n" +
+		"try\nset c to read file with \"x.txt\"\nsay c\nif it fails\nsay the problem\nend try"
+	wants(t, src, "c, err := readFile(\"x.txt\")", "if err != nil")
+}
+
 func TestAskStopRounded(t *testing.T) {
 	wants(t, "ask \"Name?\" into name\nsay name",
 		"\"bufio\"", "\"strings\"", "stdinReader = bufio.NewReader(os.Stdin)",

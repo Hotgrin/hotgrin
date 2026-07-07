@@ -16,6 +16,7 @@ import (
 	"unicode"
 
 	"github.com/hotgrin/hotgrin/internal/ast"
+	"github.com/hotgrin/hotgrin/internal/gobridge"
 )
 
 // --- types --------------------------------------------------------------
@@ -69,6 +70,7 @@ type funcSig struct {
 	ret         ssType
 	hasGiveBack bool
 	fallible    bool // contains "give back problem ..." -> returns (T, error) in Go
+	isGo        bool // declared in a use-go block; emitted verbatim, not generated
 }
 
 // --- transpiler ---------------------------------------------------------
@@ -95,6 +97,8 @@ type Transpiler struct {
 	needAsk         bool
 	needOS          bool
 	needRound       bool
+	goImports       []string
+	goBodies        []string
 	inFallible      bool // currently emitting a fallible function body
 	fallibleRet     ssType
 
@@ -144,6 +148,8 @@ func (t *Transpiler) Transpile() (string, string, []string) {
 			// already handled in the preamble
 		case *ast.UseStmt:
 			// libraries are resolved by the loader before transpiling
+		case *ast.GoBlockStmt:
+			// registered in collectFuncs; body emitted with the funcs below
 		default:
 			mainBody.WriteString(t.emitStmt(s))
 			mainBody.WriteString("\n")
@@ -177,6 +183,10 @@ func (t *Transpiler) Transpile() (string, string, []string) {
 		src.WriteString("var backgroundTasks sync.WaitGroup\n\n")
 	}
 	src.WriteString(t.helpers())
+	for _, gb := range t.goBodies {
+		src.WriteString(gb)
+		src.WriteString("\n\n")
+	}
 	src.WriteString(funcs.String())
 	src.WriteString("func main() {\n")
 	if t.needBackground {
@@ -241,6 +251,17 @@ func (t *Transpiler) imports() []string {
 	}
 	if t.needSync {
 		out = append(out, "sync")
+	}
+	for _, im := range t.goImports {
+		dup := false
+		for _, have := range out {
+			if have == im {
+				dup = true
+			}
+		}
+		if !dup {
+			out = append(out, im)
+		}
 	}
 	return out
 }
@@ -439,6 +460,26 @@ func (t *Transpiler) collectFuncs() {
 			sig.paramTypes[i] = tUnknown
 		}
 		t.funcs[sanitize(a.Name)] = sig
+	}
+
+	// 1b. register functions declared in use-go blocks (imports split out)
+	for _, s := range t.prog.Statements {
+		g, ok := s.(*ast.GoBlockStmt)
+		if !ok {
+			continue
+		}
+		imps, body := gobridge.Imports(g.Code)
+		t.goImports = append(t.goImports, imps...)
+		t.goBodies = append(t.goBodies, body)
+		for _, f := range gobridge.Funcs(body) {
+			sig := funcSig{goName: f.Name, ssParams: make([]string, f.Params),
+				paramTypes: make([]ssType, f.Params), ret: goTypeToSS(f.Ret),
+				hasGiveBack: f.Ret != "", fallible: f.Fallible, isGo: true}
+			for i := range sig.paramTypes {
+				sig.paramTypes[i] = tUnknown
+			}
+			t.funcs[f.Name] = sig
+		}
 	}
 
 	// 2. infer param types from the first call site of each function
@@ -922,6 +963,21 @@ func inputSpec(typ string) (flagFunc, zero string, ty ssType) {
 	}
 }
 
+// goTypeToSS maps a Go return type name to hotgrin's type ladder.
+func goTypeToSS(t string) ssType {
+	switch t {
+	case "int", "int64", "int32":
+		return tInt
+	case "float64", "float32":
+		return tFloat
+	case "string":
+		return tString
+	case "bool":
+		return tBool
+	}
+	return tUnknown
+}
+
 func inputType(typ string) ssType {
 	_, _, ty := inputSpec(typ)
 	return ty
@@ -1318,7 +1374,13 @@ func (t *Transpiler) emitExpr(e ast.Expr) string {
 	case *ast.NothingLit:
 		return "nil"
 	case *ast.Identifier:
-		return sanitize(x.Name)
+		name := sanitize(x.Name)
+		if _, isVar := t.scope[name]; !isVar {
+			if _, isFunc := t.funcs[name]; isFunc {
+				return name + "()" // a bare action name is a zero-argument call
+			}
+		}
+		return name
 	case *ast.CallExpr:
 		var args []string
 		for _, a := range x.Args {

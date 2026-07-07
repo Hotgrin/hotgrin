@@ -12,18 +12,17 @@ indexing · deeper type inference — all landed in v0.3.0 (see the
 [changelog](CHANGELOG.md)). Still growing continuously: cookbook recipes and
 Watcher rules.
 
-## v0.4 — the ecosystem door
+## v0.4 — the ecosystem door ✅ shipped
 
-- **Remote libraries** — `use tools from "github.com/someone/hotgrin-tools"`,
-  fetched and cached, so sharing hotgrin code becomes one line. (Local
-  libraries already work.)
-- **The `use go` escape hatch** — embed Go directly for the rare gap, which
-  makes the entire Go package ecosystem reachable from hotgrin.
-- **Seed standard libraries** — small, first-party: `text` (formatting,
-  casing), `data` (read/write files, CSV), `web` (fetch JSON from an API).
-- **A library-authoring guide**, so community libraries feel native.
+Remote GitHub libraries (fetched + cached, `@tag` pinning) · the `use go`
+escape hatch (including fallible `(T, error)` functions) · first standard
+libraries (`std/text`, `std/data`, `std/random`) · the
+[library-authoring guide](docs/library-guide.md). A `std/web` library (fetch
+JSON from APIs) moves to v0.5.
 
 ## v0.5 — the headline features
+
+- **`std/web`** — fetch text/JSON from an API, built on the fallible bridge.
 
 - **Units of measure** — `set weight to 129 kg`, with unit-aware maths and
   conversions. Designed but deliberately parked until it can be done properly.

@@ -64,11 +64,42 @@ func TestTransitiveAndLoadOnce(t *testing.T) {
 	}
 }
 
+func TestStdLibraryEmbedded(t *testing.T) {
+	dir := t.TempDir()
+	write(t, dir, "app.hot", "use \"std/text\"\nsay upper case with \"hi\"")
+	prog, errs := LoadFile(filepath.Join(dir, "app.hot"))
+	if len(errs) > 0 {
+		t.Fatalf("unexpected errors: %v", errs)
+	}
+	found := false
+	for _, s := range prog.Statements {
+		if _, ok := s.(*ast.GoBlockStmt); ok {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("std/text's go block was not merged")
+	}
+	// unknown std name is a friendly error
+	write(t, dir, "bad.hot", "use \"std/nope\"\nsay 1")
+	if _, errs := LoadFile(filepath.Join(dir, "bad.hot")); len(errs) == 0 {
+		t.Error("expected an error for unknown std library")
+	}
+}
+
+func TestRemoteSpecValidation(t *testing.T) {
+	dir := t.TempDir()
+	write(t, dir, "app.hot", "use x from \"github.com/onlyuser\"\nsay 1")
+	if _, errs := LoadFile(filepath.Join(dir, "app.hot")); len(errs) == 0 {
+		t.Error("expected an error for a malformed remote spec")
+	}
+}
+
 func TestRemoteLibraryRejected(t *testing.T) {
 	dir := t.TempDir()
-	write(t, dir, "app.hot", "use math from \"github.com/x/y\"\nsay 1")
+	write(t, dir, "app.hot", "use math from \"ftp://example.com/lib\"\nsay 1")
 	_, errs := LoadFile(filepath.Join(dir, "app.hot"))
-	if len(errs) == 0 || !strings.Contains(strings.Join(errs, " "), "remote libraries") {
+	if len(errs) == 0 || !strings.Contains(strings.Join(errs, " "), "github.com") {
 		t.Errorf("expected a remote-library error, got %v", errs)
 	}
 }

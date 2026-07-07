@@ -3,6 +3,25 @@
 All notable changes to hotgrin are recorded here. This project follows
 [Semantic Versioning](https://semver.org/) loosely while it is pre-1.0.
 
+## [0.4.0] - 2026-07-06
+
+The ecosystem door: hotgrin programs can now use each other's code — and all
+of Go's.
+
+### Added
+- **Remote libraries** — `use tools from "github.com/user/repo"` fetches a
+  library with git, caches it under `~/.hotgrin/cache/`, and compiles it in.
+  Subpaths and `@tag` version pinning work. Verified against a live repo.
+- **The `use go` escape hatch** — embed Go between `use go` and `end go`.
+  Declared functions become hotgrin actions (`shoutCase` reads as
+  `shout case`); imports are merged; functions returning `(T, error)` are
+  fallible and integrate with `try / if it fails`.
+- **Standard libraries**, embedded in the binary:
+  `std/text` (case, trim, replace, length), `std/data` (read/write files,
+  fallible), `std/random` (random numbers).
+- **[Library-authoring guide](docs/library-guide.md)**.
+- Bare action names are zero-argument calls: `say lucky number`.
+
 ## [0.3.0] - 2026-07-04
 
 Interactive programs, tidy numbers, and smarter inference — every item driven

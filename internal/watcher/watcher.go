@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/hotgrin/hotgrin/internal/ast"
+	"github.com/hotgrin/hotgrin/internal/gobridge"
 )
 
 type Severity int
@@ -139,6 +140,22 @@ func (w *Watcher) collect() {
 			seen[p] = true
 		}
 	}
+	// functions declared in use-go blocks are callable actions too
+	for _, s := range w.prog.Statements {
+		if g, ok := s.(*ast.GoBlockStmt); ok {
+			_, body := gobridge.Imports(g.Code)
+			for _, f := range gobridge.Funcs(body) {
+				params := make([]string, f.Params)
+				w.actions[spacedName(f.Name)] = actionInfo{params: params, line: g.Line}
+				w.actions[f.Name] = actionInfo{params: params, line: g.Line}
+				if f.Fallible {
+					w.fallible[spacedName(f.Name)] = true
+					w.fallible[f.Name] = true
+				}
+			}
+		}
+	}
+
 	// record field sets (collected globally; record names are normally unique)
 	var walk func(stmts []ast.Stmt)
 	walk = func(stmts []ast.Stmt) {
@@ -483,6 +500,21 @@ func (w *Watcher) checkUnused(stmts []ast.Stmt, names map[string]bool) {
 }
 
 // --- small helpers ------------------------------------------------------
+
+// spacedName turns a Go camelCase name into its hotgrin spoken form:
+// luckyNumber -> "lucky number".
+func spacedName(goName string) string {
+	var b strings.Builder
+	for i, r := range goName {
+		if i > 0 && r >= 'A' && r <= 'Z' {
+			b.WriteByte(' ')
+			b.WriteRune(r + ('a' - 'A'))
+		} else {
+			b.WriteRune(r)
+		}
+	}
+	return b.String()
+}
 
 func lineOf(s ast.Stmt) int {
 	if g, ok := s.(interface{ GetLine() int }); ok {

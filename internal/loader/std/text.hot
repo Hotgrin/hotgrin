@@ -1,0 +1,13 @@
+# std/text — everyday text helpers for hotgrin.
+# Each action wraps Go's standard strings package via the escape hatch.
+
+use go
+import "strings"
+func upperCase(s string) string { return strings.ToUpper(s) }
+func lowerCase(s string) string { return strings.ToLower(s) }
+func trimSpaces(s string) string { return strings.TrimSpace(s) }
+func replaceAll(s string, old string, new string) string { return strings.ReplaceAll(s, old, new) }
+func textLength(s string) int { return len([]rune(s)) }
+func startsWith(s string, prefix string) bool { return strings.HasPrefix(s, prefix) }
+func endsWith(s string, suffix string) bool { return strings.HasSuffix(s, suffix) }
+end go

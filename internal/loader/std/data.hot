@@ -1,0 +1,14 @@
+# std/data — read and write text files.
+# These can fail (a file may not exist), so use them inside try blocks.
+
+use go
+import "os"
+func readFile(path string) (string, error) {
+	b, err := os.ReadFile(path)
+	return string(b), err
+}
+func writeFile(path string, content string) (string, error) {
+	err := os.WriteFile(path, []byte(content), 0o644)
+	return path, err
+}
+end go

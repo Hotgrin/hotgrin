@@ -1,4 +1,4 @@
-# hotgrin language reference (v0.3)
+# hotgrin language reference (v0.4)
 
 A precise reference for the current implementation. For a gentle introduction,
 see the [tutorial](tutorial.md). hotgrin transpiles to Go; each section
@@ -170,14 +170,31 @@ Inputs become Go `flag` declarations at the top of `main()`; the program gets
 
 ### Libraries
 ```
-use "lib/textutils"             # path relative to the importing file (.hot optional)
-use textutils from "lib/textutils"
+use "lib/textutils"             # local: path relative to the importing file
+use "std/text"                  # standard library, shipped inside hotgrin
+use tools from "github.com/you/repo"        # remote, fetched with git + cached
+use tools from "github.com/you/repo@v1.0"   # pinned to a tag
 ```
 A library is a plain `.hot` file; its **actions** are merged into the consuming
 program (whole-program transpile). Transitive `use` works; each file loads once
 (cycles and diamonds are safe); the Watcher checks imported code too. Non-action
-top-level statements in a library are ignored. Remote paths (GitHub/URLs) are
-not fetched yet and produce a friendly error.
+top-level statements in a library are ignored. Remote github.com libraries are
+fetched with git and cached under `~/.hotgrin/cache/`. See the
+[library guide](library-guide.md).
+
+### The `use go` escape hatch
+```
+use go
+import "strings"
+func shoutCase(s string) string { return strings.ToUpper(s) + "!" }
+end go
+
+say shout case with "howzit"
+```
+Everything between `use go` and `end go` is Go, compiled verbatim. Declared
+functions become callable actions (camelCase reads as spaced words); functions
+returning `(T, error)` are fallible and must be called inside `try`. Simple
+parameter/return types only (`string`, `int`, `float64`, `bool`).
 
 ## Expressions
 
@@ -224,5 +241,5 @@ hotgrin version | help
 
 ## Not in v0.1 (roadmap)
 
-Remote libraries · type annotations · units of measure · an interpreter mode
+Type annotations · units of measure · an interpreter mode
 (no Go install) · the Assessor and AI-mentor checking layers.
