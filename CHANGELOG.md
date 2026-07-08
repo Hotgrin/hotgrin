@@ -3,6 +3,47 @@
 All notable changes to hotgrin are recorded here. This project follows
 [Semantic Versioning](https://semver.org/) loosely while it is pre-1.0.
 
+## [0.5.3] - 2026-07-08
+
+### Added
+- **Invoice Maker** flagship project (`examples/projects/invoice-maker/`):
+  ~200 heavily-commented lines with a numbered section index, plus an
+  extensive beginner TUTORIAL.md. Produces a text invoice and an HTML page.
+- README: dynamic release badge (auto-updates with every tag), downloads
+  badge, Go Report Card badge; Status section rewritten version-agnostically.
+
+### Fixed
+- Two sequential `try` blocks in one scope no longer collide on an internal
+  error name.
+- The `version` command now tracks releases again.
+
+## [0.5.2] - 2026-07-08
+
+### Added
+- **Examples gallery**: nine categories (seo, api, math, finance, science,
+  text-files, html, email, games), twenty machine-verified programs, indexed
+  in `examples/README.md` and the README's "What can you build?" table.
+- `std/text`: fallible `text between` (substring extraction).
+- **String escapes**: `\n`, `\t`, `\"`, `\\` now work in text literals.
+- **Rate division for units**: dividing across dimensions yields the plain
+  base-unit rate (`5 km divided by 25 min` is metres per second).
+- New Watcher rule: a fallible call nested inside a larger expression is
+  caught kindly ("set it into a name first").
+
+### Fixed
+- Unused variables set from fallible calls inside `try` get their `_ =` guard.
+
+## [0.5.1] - 2026-07-07
+
+### Added
+- **AI prompt pack** (`docs/ai-prompt-pack.md`): a complete language spec for
+  AI assistants, with a growing GOTCHAS list; plus `llms.txt`, `AGENTS.md`,
+  and `CLAUDE.md`.
+
+### Fixed
+- Repeated fallible sets of the same variable (including in nested tries) no
+  longer emit duplicate Go declarations.
+
 ## [0.5.0] - 2026-07-07
 
 The headline release: measurements are part of the language.

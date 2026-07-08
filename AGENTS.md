@@ -49,6 +49,8 @@ House rules (non-negotiable):
 4. **Docs claims must be true of the current version** — the cookbook's
    recipes are machine-verified; keep it that way (extract and run them).
 5. gofmt clean, go vet clean, before any handoff.
+6. **Every release tag bumps the `version` const** in `cmd/hotgrin/main.go`
+   and gets a CHANGELOG entry — check both before suggesting a tag.
 
 Common tasks:
 - New Watcher rule → `internal/watcher/watcher.go` (+ bilingual message pair
