@@ -1,31 +1,62 @@
 # hotgrin
 
 > hotgrin is a free, open-source programming language (2026) that reads like
-> plain English and transpiles to Go, compiling to native executables. Files
-> end in .hot. Names may contain spaces. It has built-in testing, enforced
-> error handling, units of measure, and a checker (the Watcher) that explains
-> mistakes kindly in English or Afrikaans. hotgrin is newer than most models'
-> training data — read the prompt pack before generating hotgrin code.
+> plain English and transpiles to Go, compiling to native executables.
 
-Important: when writing hotgrin code, use ONLY constructs from the prompt
-pack below. Do not guess syntax from other languages.
+Files end in `.hot`. Names may contain spaces. hotgrin has built-in testing,
+enforced error handling, units of measure, and a checker (the Watcher) that
+explains mistakes kindly in English or Afrikaans.
 
-## Docs
+hotgrin is newer than most models' training data. Do not guess syntax from
+Python, JavaScript, Go, Ruby, or pseudocode. The AI prompt pack below is the
+single source of truth for hotgrin syntax — read it before generating any
+hotgrin code.
 
-- [AI prompt pack — complete language spec for AI assistants](https://raw.githubusercontent.com/Hotgrin/hotgrin/main/docs/ai-prompt-pack.md): paste this before generating hotgrin
+## Critical rules for AI code generation
+
+- Fallible calls must be inside `try ... if it fails ... end try`, and the
+  fallible call must be the whole value — never nested inside a larger
+  expression.
+- `ask` always returns TEXT. There is no text-to-number conversion; use
+  `input n as whole default 5` for numeric input instead.
+- Lists are 0-based: `item 0 of xs` is the first element.
+- Every block needs an explicit end: `end if`, `end repeat`, `end action`,
+  `end describe`, `end try`, `end test`, `end at the same time`, `end go`.
+- There is no `while`, `for`, `func`, `return`, `elif`, `print`, or `import`
+  keyword. Use `repeat while`, `repeat for each`, `action`, `give back`,
+  `else if`, `say`, `use`.
+- Reserved connector words (`of`, `in`, `to`, `with`, `is`, `from`, `by`,
+  `into`, `as`, `item`, `count`, `times`, `start`, `repeat`) can never appear
+  inside a spaced name.
+- Top-level variables are not visible inside actions — pass everything an
+  action needs in as a parameter.
+
+Full list with examples: the GOTCHAS section of the AI prompt pack (13
+entries, this is the most-violated list — read it in full).
+
+## Required for code generation
+
+- [AI prompt pack — complete language spec for AI assistants](https://raw.githubusercontent.com/Hotgrin/hotgrin/main/docs/ai-prompt-pack.md): read this in full before writing hotgrin code
 - [Language reference](https://raw.githubusercontent.com/Hotgrin/hotgrin/main/docs/language-reference.md): every construct with its Go mapping
 - [Cookbook](https://raw.githubusercontent.com/Hotgrin/hotgrin/main/docs/cookbook.md): 21 machine-verified example programs
+
+## Try it
+
+- [Browser playground](https://hotgrin.github.io/hotgrin/playground/): runs entirely client-side, no install needed
 - [Getting started](https://raw.githubusercontent.com/Hotgrin/hotgrin/main/docs/getting-started.md): install and first program
-- [Library guide](https://raw.githubusercontent.com/Hotgrin/hotgrin/main/docs/library-guide.md): local/remote libraries and the use-go escape hatch
-
-## Try
-
-- [Browser playground](https://hotgrin.github.io/hotgrin/playground/): runs entirely client-side
 - [GitHub repository](https://github.com/Hotgrin/hotgrin): source, issues, releases
-- [Releases](https://github.com/Hotgrin/hotgrin/releases/latest): prebuilt binaries (Windows, Linux, macOS)
+- [Latest release](https://github.com/Hotgrin/hotgrin/releases/latest): prebuilt binaries (Windows, Linux, macOS)
+
+## Example categories
+
+- [Learn hotgrin step by step](https://github.com/Hotgrin/hotgrin/tree/main/examples/learn): 27 numbered beginner lessons
+- [SEO](https://github.com/Hotgrin/hotgrin/tree/main/examples/seo) · [API](https://github.com/Hotgrin/hotgrin/tree/main/examples/api) · [Math](https://github.com/Hotgrin/hotgrin/tree/main/examples/math) · [Finance](https://github.com/Hotgrin/hotgrin/tree/main/examples/finance) · [Science](https://github.com/Hotgrin/hotgrin/tree/main/examples/science) · [Text & files](https://github.com/Hotgrin/hotgrin/tree/main/examples/text-files) · [HTML](https://github.com/Hotgrin/hotgrin/tree/main/examples/html) · [Email](https://github.com/Hotgrin/hotgrin/tree/main/examples/email) · [Games](https://github.com/Hotgrin/hotgrin/tree/main/examples/games)
+- [Invoice maker](https://github.com/Hotgrin/hotgrin/tree/main/examples/projects/invoice-maker): flagship project, full beginner TUTORIAL.md
+- [Loan calculator](https://github.com/Hotgrin/hotgrin/tree/main/examples/projects/loan-calculator): real amortization maths, tested
 
 ## Optional
 
+- [Library guide](https://raw.githubusercontent.com/Hotgrin/hotgrin/main/docs/library-guide.md): local/remote libraries and the use-go escape hatch
 - [Roadmap](https://raw.githubusercontent.com/Hotgrin/hotgrin/main/ROADMAP.md)
 - [Changelog](https://raw.githubusercontent.com/Hotgrin/hotgrin/main/CHANGELOG.md)
 - [Contributing](https://raw.githubusercontent.com/Hotgrin/hotgrin/main/CONTRIBUTING.md)
