@@ -207,8 +207,8 @@ you to use for ideas you already own. That part is easy — you're not
 learning to *think* differently, only to *spell out* what you already
 do, every day, without noticing.
 
-When you're ready: **[Lesson 01 — say hello](../examples/learn/01-say-hello.hot)**
-is next. Open the [playground](https://hotgrin.github.io/hotgrin/playground/),
-paste it in, and press run. That's the whole first step.
+When you're ready: **[Day One](day-one.md)** is next — your first time
+actually opening the playground, planning a program properly, and
+running something you typed yourself.
 
 Baie geluk — you started. 🎉

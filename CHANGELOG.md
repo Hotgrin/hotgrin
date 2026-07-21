@@ -3,6 +3,22 @@
 All notable changes to hotgrin are recorded here. This project follows
 [Semantic Versioning](https://semver.org/) loosely while it is pre-1.0.
 
+## [0.5.8] - 2026-07-21
+
+### Added
+- **Day One** (`docs/day-one.md`): the follow-up to Day Zero — first real
+  hands-on session in the playground. Teaches the "before you type
+  anything" four-question planning ritual, then turns that plan into a
+  numbered comment skeleton matching the real section-index convention
+  already used in the Invoice Maker flagship example, filled in
+  comment-first/code-second, reusing Day Zero's tea example so the two
+  lessons close the same loop instead of starting cold on something new.
+  Also covers, briefly and reassuringly: why one file is fine for a
+  program this size, and that nothing else needs installing yet. Wired
+  in as the step between Day Zero and Lesson 01 across the README,
+  `docs/getting-started.md`, and `examples/learn/README.md`; Day Zero's
+  closing pointer updated to route through it.
+
 ## [0.5.7] - 2026-07-21
 
 ### Added

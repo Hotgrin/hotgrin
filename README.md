@@ -230,8 +230,9 @@ the full list lives in [ROADMAP.md](ROADMAP.md).
 
 Never coded before — not even a little? Start with
 **[Day Zero](docs/day-zero.md)**, a five-minute, no-computer page that shows
-you've already been thinking like a programmer your whole life. Then come
-back here.
+you've already been thinking like a programmer your whole life. Then
+**[Day One](docs/day-one.md)** — your first time opening the playground and
+planning a real program before you type it. Then come back here.
 
 [`examples/learn/`](examples/learn/) is a numbered lesson path — every file a
 tiny, runnable, heavily-commented program, from your first `say "hello"` to a

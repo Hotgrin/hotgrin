@@ -14,6 +14,7 @@ five-minute, no-computer page, before lesson 01.
 | # | Lesson | You learn |
 |---|--------|-----------|
 | 00 | [Day Zero](../../docs/day-zero.md) | *(unplugged)* recipes, lists, and jars are already algorithms, loops, and variables |
+| — | [Day One](../../docs/day-one.md) | *(hands-on)* plan before you type, the numbered-comment habit, running your first real program |
 | 01 | [say hello](01-say-hello.hot) | your first program, `say`, comments |
 | 02 | [remembering things](02-remembering-things.hot) | `set`, names with spaces, joining text |
 | 03 | [maths that behaves](03-maths-that-behaves.hot) | arithmetic, brackets, `rounded to`, increase/decrease |
