@@ -24,7 +24,7 @@ import (
 	"github.com/hotgrin/hotgrin/internal/watcher"
 )
 
-const version = "hotgrin 0.5.10"
+const version = "hotgrin 0.5.11"
 
 func main() {
 	af := false

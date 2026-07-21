@@ -3,6 +3,26 @@
 All notable changes to hotgrin are recorded here. This project follows
 [Semantic Versioning](https://semver.org/) loosely while it is pre-1.0.
 
+## [0.5.11] - 2026-07-21
+
+### Added
+- **Day Two** (`docs/day-two.md`): continues the Day Zero/Day One story
+  with the first real decision — reuses Day Zero's umbrella rule as the
+  worked example (same continuity trick as Day One reusing the tea
+  recipe), makes a real variable for the first time (`set raining to
+  true`), builds the numbered-comment skeleton the same way as Day One,
+  then fills in an `if` / `else` and later an `else if` branch. The
+  central teaching moment — flip `true` to `false` and watch the same
+  decision produce a different, correct result without touching the
+  logic — was verified for real: all three branches of the final
+  `else if` example were run with every combination of `true`/`false`
+  and confirmed to print exactly what the lesson claims.
+  Wired in as an optional continuation from Day One (which still also
+  points to Lesson 01, so both paths stay visible), and added to the
+  README, `getting-started.md`, and `examples/learn/README.md`. Points
+  onward to Lesson 04 (the numbered lesson covering the same topic in
+  more depth) and mentions Lessons 02–03 as optional extra practice.
+
 ## [0.5.10] - 2026-07-21
 
 ### Added

@@ -11,7 +11,9 @@ what's next. If a chat and this file disagree, **this file wins** — it's
 checked against source; a chat summary might describe a sandbox that never
 got pushed.
 
-Last verified against remote: **2026-07-21**, commit `5790c0d`, tag `v0.5.10`.
+Last verified against remote: **2026-07-21**, commit `f0ce4dc`, tag `v0.5.10`.
+This update (Day Two, v0.5.11) prepared but not yet pushed as of this
+writing — see Mid-flight below.
 
 ---
 
@@ -43,13 +45,14 @@ Last verified against remote: **2026-07-21**, commit `5790c0d`, tag `v0.5.10`.
 - Record-field-writes (`set price of order to 249`), std renames that
   removed reserved-word collisions (`starts with` → `has prefix`, etc).
 - **All six audited engine bugs confirmed filed as real GitHub issues**
-  (2026-07-21) — no longer "drafted but unconfirmed." Current state:
+  (2026-07-21). Current state:
   - #1 CRITICAL — `at the same time` hangs. Open. Narrowing comment
-    drafted, not yet posted (see Mid-flight below).
+    posted (2026-07-21, confirmed by AJ) — narrows it to calling **two or
+    more different actions** in one block; calling the same action
+    multiple times is fine. Bug itself still open.
   - #2 HIGH — `list of nothing` collapses list type to `any`. Open.
-  - #3 — `set x to <record type>` fails outside top level. **This is the
-    record-instantiation bug, fixed in v0.5.9.** Close-comment drafted,
-    not yet posted (see Mid-flight below).
+  - #3 — **Closed (2026-07-21, confirmed by AJ).** Was the
+    record-instantiation bug; fixed and explained in v0.5.9.
   - #4 MEDIUM — `give back` inside `try` fails while Watcher says "All
     good." Open.
   - #5 MEDIUM — unknown record field passes Watcher, fails Go compile.
@@ -60,12 +63,14 @@ Last verified against remote: **2026-07-21**, commit `5790c0d`, tag `v0.5.10`.
 
 ## Mid-flight — needs a decision or re-verification, not assumed done
 
-- **GitHub issues #3 and #1** — comments/close-text drafted and handed to
-  AJ to paste; **not yet posted on GitHub as of this writing.** #3 ("set x
-  to <record type> only works at the top level") is the record-instantiation
-  bug, fixed in v0.5.9 — close it with the drafted comment once posted. #1
-  (`at the same time` hangs) gets a narrowing comment (see below) but stays
-  open — the underlying bug isn't fixed, just better understood.
+- **Day Two (v0.5.11)** — `docs/day-two.md`, continues the Day Zero/Day
+  One story with the first real decision, reusing Day Zero's umbrella
+  rule. All code verified, including every branch of the final `else if`
+  example run with every combination of `true`/`false` and confirmed
+  against the exact output the lesson claims. Wired into README,
+  `getting-started.md`, `examples/learn/README.md`, and Day One's closing
+  (as an optional continuation — Day One still also points to Lesson 01).
+  **Prepared, not yet pushed to GitHub as of this writing.**
 
 ## Decided — house rules, don't relitigate
 
@@ -99,8 +104,13 @@ Last verified against remote: **2026-07-21**, commit `5790c0d`, tag `v0.5.10`.
 Sequence agreed: **Day Zero → Day One → living glossary → first
 micro-lessons → AI Mentor**, with community-building ("Study Stoep") and
 the hotgrin.com homepage redesign running alongside whenever there's room.
-Day Zero, Day One, and the glossary are all shipped (glossary mid-flight
-as v0.5.10, see above). Homepage redesign was proposed but not started;
+Day Zero, Day One, and the glossary are all shipped. Decided (2026-07-21):
+first micro-lessons continue as a "Day Two, Day Three..." story rather
+than standalone practical mini-projects — Day Two shipping now (see
+Mid-flight above), Day Three (loops) and beyond to follow the same
+pattern: reuse an earlier example where possible, live-verify every
+branch, hand off to the matching numbered lesson at the end. Homepage
+redesign was proposed but not started;
 first micro-lessons and AI Mentor not started.
 
 ## Marketing / launch — status
@@ -128,8 +138,7 @@ entry, not a sign to go digging through old chats.
 
 ## Next up
 
-1. Paste the drafted comments onto GitHub issues #1 and #3, and close #3
-   (the fixed record bug) — the one blocking step to close that loop.
-2. First micro-lessons — next beginner-education piece after the glossary.
+1. Push Day Two (v0.5.11) — the one blocking step to close that loop.
+2. Day Three (loops) — next in the Day-story sequence.
 3. hotgrin.com homepage redesign (simple, plain-language nav, one button).
 4. Watch for ZATech replies; respond as they come in.

@@ -172,3 +172,7 @@ When you're ready, **[Lesson 01 — say hello](../examples/learn/01-say-hello.ho
 picks up from exactly here. And whenever you hit a word in someone else's
 hotgrin code that you don't recognize yet, the **[glossary](glossary.md)**
 has a plain-language explanation and a working example for every one.
+
+Or, if you'd rather keep going with this story a little longer before the
+numbered lessons: **[Day Two](day-two.md)** continues right from here,
+with your first real decision.

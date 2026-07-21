@@ -232,7 +232,8 @@ Never coded before — not even a little? Start with
 **[Day Zero](docs/day-zero.md)**, a five-minute, no-computer page that shows
 you've already been thinking like a programmer your whole life. Then
 **[Day One](docs/day-one.md)** — your first time opening the playground and
-planning a real program before you type it. Then come back here.
+planning a real program before you type it. **[Day Two](docs/day-two.md)**
+continues the story with your first real decision. Then come back here.
 
 Hit a word in some hotgrin code you don't recognize? The
 **[glossary](docs/glossary.md)** explains every one of them in plain

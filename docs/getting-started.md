@@ -4,10 +4,11 @@ Three ways in, from easiest to most hands-on. Pick one.
 
 > **Never written a line of code before?** Read
 > **[Day Zero](day-zero.md)** first — five minutes, no computer needed,
-> no installs. Then **[Day One](day-one.md)** — your first time opening
-> the playground and planning a real program before typing it. Then
-> come back here. Keep the **[glossary](glossary.md)** handy for any word
-> that doesn't click right away.
+> no installs. Then **[Day One](day-one.md)** and **[Day
+> Two](day-two.md)** — planning and running your first real programs,
+> decisions included. Then come back here. Keep the
+> **[glossary](glossary.md)** handy for any word that doesn't click right
+> away.
 
 ## Option 1 — Nothing to install (30 seconds)
 
