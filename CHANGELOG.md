@@ -3,6 +3,30 @@
 All notable changes to hotgrin are recorded here. This project follows
 [Semantic Versioning](https://semver.org/) loosely while it is pre-1.0.
 
+## [0.5.10] - 2026-07-21
+
+### Added
+- **The living glossary** (`docs/glossary.md`): every term used across the
+  language — from `action` to `with` — explained in plain language first,
+  jargon named second, with a working code example for each. Comprehensive
+  by design: covers everything in the language reference, not just the
+  beginner-lesson basics. Linked from the README, `getting-started.md`,
+  `examples/learn/README.md`, `language-reference.md` (cross-linked both
+  ways), and Day One's closing section.
+  All 35 code examples in it were extracted straight from the file and
+  actually run through the compiled binary before shipping — which caught
+  three real, worth-knowing bugs along the way, not just typos: `item` as
+  a loop variable name hits the same reserved-word collision already known
+  from Day Zero; `start` and `do` require an actual action call, not a
+  bare builtin statement like `say`; and — most notably — `at the same
+  time` calling **two different actions** in the same block reliably hangs
+  the compiler, confirming and narrowing the existing CRITICAL entry in
+  `PROJECT-STATE.md` (calling the *same* action multiple times, the
+  pattern the shipped `site-report.hot` flagship example already uses, is
+  fine — it's specifically multiple *different* action names that hang).
+  The glossary's own example works around this the same way the flagship
+  example does; the underlying compiler bug is still open.
+
 ## [0.5.9] - 2026-07-21
 
 ### Fixed

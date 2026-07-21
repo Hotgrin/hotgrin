@@ -9,7 +9,9 @@ hotgrin run 01-say-hello.hot
 ```
 
 **Never coded before?** Start at **[Day Zero](../../docs/day-zero.md)** — a
-five-minute, no-computer page, before lesson 01.
+five-minute, no-computer page, before lesson 01. Stuck on a word partway
+through? The **[glossary](../../docs/glossary.md)** explains every one, in
+plain language, alphabetically.
 
 | # | Lesson | You learn |
 |---|--------|-----------|

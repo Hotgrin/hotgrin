@@ -169,4 +169,6 @@ That loop — plan, skeleton, fill in, run — is the whole job. Everything
 from here is just learning new words to put inside that same loop.
 
 When you're ready, **[Lesson 01 — say hello](../examples/learn/01-say-hello.hot)**
-picks up from exactly here.
+picks up from exactly here. And whenever you hit a word in someone else's
+hotgrin code that you don't recognize yet, the **[glossary](glossary.md)**
+has a plain-language explanation and a working example for every one.

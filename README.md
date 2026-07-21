@@ -234,6 +234,10 @@ you've already been thinking like a programmer your whole life. Then
 **[Day One](docs/day-one.md)** — your first time opening the playground and
 planning a real program before you type it. Then come back here.
 
+Hit a word in some hotgrin code you don't recognize? The
+**[glossary](docs/glossary.md)** explains every one of them in plain
+language, alphabetically, with a working example.
+
 [`examples/learn/`](examples/learn/) is a numbered lesson path — every file a
 tiny, runnable, heavily-commented program, from your first `say "hello"` to a
 playable word game. Read, run, change, break, fix: that cycle is the course.

@@ -11,19 +11,23 @@ what's next. If a chat and this file disagree, **this file wins** — it's
 checked against source; a chat summary might describe a sandbox that never
 got pushed.
 
-Last verified against remote: **2026-07-21**, commit `aeb029d`, tag `v0.5.8`.
-This update (record-instantiation fix, v0.5.9) prepared but not yet pushed
+Last verified against remote: **2026-07-21**, commit `45e3803`, tag `v0.5.9`.
+This update (the living glossary, v0.5.10) prepared but not yet pushed
 as of this writing — see Mid-flight below.
 
 ---
 
 ## Shipped, confirmed on the real remote
 
-- **v0.5.8** is the latest tag, verified via fresh clone + tag-points-at-
-  correct-commit check + full build/vet/test + every code snippet actually
-  run through the compiled binary. **Day Zero and Day One**
-  (`docs/day-zero.md`, `docs/day-one.md`) are both live and wired in,
-  telling one continuous story (same tea example throughout).
+- **v0.5.9** is the latest tag, verified via fresh clone + tag-points-at-
+  correct-commit check + full build/vet/test + real-world confirmation on
+  the actual published binary (not just the local sandbox build). Record
+  prototypes now work correctly from any scope — actions, `try` blocks,
+  `test` blocks, and combinations — a bug two earlier sessions worked on
+  without it ever reaching the remote; this is the one that's actually
+  fixed. **Day Zero and Day One** (`docs/day-zero.md`, `docs/day-one.md`)
+  are both live and wired in, telling one continuous story (same tea
+  example throughout).
 - **gobug** (`github.com/Hotgrin/gobug`) — separate side project, CI fully
   fixed and confirmed: v0.2.1 release has three real attached binaries
   (Windows, macOS, Linux), verified by checking the actual release page,
@@ -41,33 +45,25 @@ as of this writing — see Mid-flight below.
 
 ## Mid-flight — needs a decision or re-verification, not assumed done
 
-- **Record-instantiation fix (v0.5.9)** — the bug is real (confirmed by
-  building minimal repros before touching any code) and now genuinely
-  fixed, not just reasoned about: record prototypes (`describe point`)
-  can be used as a whole value (`set p to point`, `give back point`,
-  `expect x to be point`) from any scope — inside actions, `try` blocks,
-  `test` blocks, and combinations of those — not just the exact scope
-  where `describe` first appeared. Root cause: `describe` transpiles a
-  prototype into a real local Go variable that only exists in the
-  function where it's written; referencing it elsewhere either got
-  wrongly blocked by the Watcher or produced Go that failed to compile.
-  Fixed at both the Watcher (recognizes record-prototype names as valid
-  from any scope) and the transpiler (reconstructs a fresh, independent
-  struct literal wherever a prototype is used as a whole value, while
-  direct field mutation on a prototype — a real pattern already used in
-  shipped examples — is untouched). Verified: full internal test suite
-  green, four hand-built repro cases all pass (including an actual
-  `hotgrin test` run, not just `hotgrin run`), and all 60 example `.hot`
-  files in `examples/` run clean with no regressions. **Prepared, not yet
-  pushed to GitHub as of this writing** — the one blocking step.
-  Two earlier sessions worked on a version of this bug without it ever
-  reaching the remote (see git history — no matching commit or tag
-  existed before this fix); this entry is the one that's actually true.
+- **The living glossary (v0.5.10)** — `docs/glossary.md`, comprehensive:
+  every term in the language reference, alphabetical, plain-language-first.
+  All 35 code examples extracted straight from the file and actually run
+  through the compiled binary — caught three real bugs in the process
+  (see changelog v0.5.10 for detail), all fixed in the glossary's own
+  examples before shipping. Wired into README, `getting-started.md`,
+  `examples/learn/README.md`, and cross-linked with `language-reference.md`.
+  **Prepared, not yet pushed to GitHub as of this writing.**
 - **Known engine bugs from the 2026-07-16 audit**, drafted as GitHub issues
   but not confirmed filed (checking was blocked by API rate limits when
   this file was written — reconfirm next session):
-  1. CRITICAL — `at the same time` hangs the compiler on any nested
-     statement other than a literal `do` line.
+  1. CRITICAL — `at the same time` hangs the compiler. Narrowed while
+     building the glossary (2026-07-21): calling the *same* action
+     multiple times in one block is fine (confirmed — this is exactly the
+     pattern the shipped `site-report.hot` flagship example already uses
+     for its four concurrent fetches); it's specifically calling **two or
+     more different actions** in the same block that hangs, reliably,
+     confirmed with a minimal 2-line repro. Narrows where to look for the
+     root cause, still open.
   2. HIGH — `list of nothing` collapses the whole list's type to `any`,
      breaking field access on collected records.
   3. MEDIUM — `give back` inside `try` breaks the build while the Watcher
@@ -109,19 +105,20 @@ as of this writing — see Mid-flight below.
 Sequence agreed: **Day Zero → Day One → living glossary → first
 micro-lessons → AI Mentor**, with community-building ("Study Stoep") and
 the hotgrin.com homepage redesign running alongside whenever there's room.
-Day Zero and Day One are both shipped (v0.5.8). Homepage redesign was
-proposed but not started; glossary and AI Mentor not started.
+Day Zero, Day One, and the glossary are all shipped (glossary mid-flight
+as v0.5.10, see above). Homepage redesign was proposed but not started;
+first micro-lessons and AI Mentor not started.
 
 ## Marketing / launch — status
 
 dev.to article published, low traction (reported ~1 view, no external
 distribution). Account restricted from r/learnprogramming and
 r/ProgrammingLanguages for AI-assisted development disclosure — a
-community-mood issue, not a verdict on hotgrin. ZATech Slack post was
-drafted; whether it was actually posted is unconfirmed — **reconfirm with
-AJ before assuming it's live.** Show HN not yet attempted. Current stance:
-grow the real thing first (Day Zero, real beginner users), let institutions
-and wider marketing follow evidence rather than chase them early.
+community-mood issue, not a verdict on hotgrin. **ZATech Slack post
+confirmed live (2026-07-21)** — AJ posted it and is monitoring for
+replies. Show HN not yet attempted. Current stance: grow the real thing
+first (Day Zero, real beginner users), let institutions and wider
+marketing follow evidence rather than chase them early.
 
 ## Chat hygiene
 
@@ -137,11 +134,10 @@ entry, not a sign to go digging through old chats.
 
 ## Next up
 
-1. Push the record-instantiation fix (v0.5.9) — the one blocking step to
-   close that loop.
-2. Living glossary or first micro-lessons — next beginner-education piece
-   after Day One.
-3. hotgrin.com homepage redesign (simple, plain-language nav, one button).
-4. Confirm whether the ZATech launch post actually went out, and whether
-   the six audited engine bugs became real GitHub issues (both still
-   unconfirmed as of this writing).
+1. Push the living glossary (v0.5.10) — the one blocking step to close
+   that loop.
+2. Confirm whether the six audited engine bugs became real GitHub issues
+   (AJ checking directly on GitHub; still unconfirmed as of this writing).
+3. First micro-lessons — next beginner-education piece after the glossary.
+4. hotgrin.com homepage redesign (simple, plain-language nav, one button).
+5. Watch for ZATech replies; respond as they come in.

@@ -1,7 +1,9 @@
 # hotgrin language reference (v0.5)
 
 A precise reference for the current implementation. For a gentle introduction,
-see the [tutorial](tutorial.md). hotgrin transpiles to Go; each section
+see the [tutorial](tutorial.md). If a word here isn't landing, the
+[glossary](glossary.md) explains every one in plain language with a working
+example. hotgrin transpiles to Go; each section
 notes the mapping, and `hotgrin reveal file.hot` shows the exact output for
 your program.
 
